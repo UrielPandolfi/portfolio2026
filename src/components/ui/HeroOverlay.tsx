@@ -2,6 +2,7 @@ import Link from "next/link";
 import { profile } from "@/data/profile";
 import { objectConfig, sections, type Section } from "@/data/sceneConfig";
 import { Icon } from "./Icon";
+import { RainToggle } from "./RainToggle";
 
 const icons = {
   projects: "book",
@@ -14,6 +15,7 @@ export function HeroOverlay({
   onOpen,
   active,
   calm,
+  still,
   onToggleCalm,
   dreamy,
   onToggleDreamy,
@@ -21,6 +23,7 @@ export function HeroOverlay({
   onOpen: (section: Section) => void;
   active: boolean;
   calm: boolean;
+  still: boolean;
   onToggleCalm: () => void;
   dreamy: boolean;
   onToggleDreamy: () => void;
@@ -41,6 +44,7 @@ export function HeroOverlay({
           CURIOUS.
         </div>
         <div className="header-controls">
+          <RainToggle suspended={still} />
           <button
             className={`atmosphere-button ${dreamy ? "is-dreamy" : ""}`}
             aria-label={

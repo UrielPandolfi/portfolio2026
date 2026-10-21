@@ -48,7 +48,62 @@ export function applySeatedPose(root: Object3D) {
     ]);
   aim("LeftArm", "LeftForeArm", [0.16, 0.65, 0.12]);
   aim("RightArm", "RightForeArm", [-0.16, 0.65, 0.12]);
-  aim("LeftForeArm", "LeftHand", [0.1, 0.66, 0.27]);
-  aim("RightForeArm", "RightHand", [-0.1, 0.66, 0.27]);
+  aim("LeftForeArm", "LeftHand", [0.1, 0.68, 0.27]);
+  aim("RightForeArm", "RightHand", [-0.1, 0.68, 0.27]);
   root.updateMatrixWorld(true);
+
+  const rotatePalm = (handName: string, forearmName: string, angle: number) => {
+    const hand = findBone(root, handName);
+    const forearm = findBone(root, forearmName);
+  
+    if (!hand || !forearm || !hand.parent) return;
+  
+    root.updateMatrixWorld(true);
+  
+    const wristPos = hand.getWorldPosition(new Vector3());
+    const elbowPos = forearm.getWorldPosition(new Vector3());
+  
+    // Eje natural del antebrazo
+    const axis = wristPos.clone().sub(elbowPos).normalize();
+  
+    // Rotación en coordenadas globales
+    const twist = new Quaternion().setFromAxisAngle(axis, angle);
+  
+    const worldRotation = hand.getWorldQuaternion(new Quaternion());
+    const parentRotation = hand.parent.getWorldQuaternion(new Quaternion());
+  
+    hand.quaternion.copy(
+      parentRotation.invert()
+        .multiply(twist)
+        .multiply(worldRotation)
+    );
+  };
+  
+  // Girar ambas palmas hacia la mesa
+  rotatePalm("LeftHand", "LeftForeArm", 0.55);
+  rotatePalm("RightHand", "RightForeArm", -0.55);
+  
+  const tiltHandUp = (handName: string, angle: number) => {
+    const hand = findBone(root, handName);
+    if (!hand || !hand.parent) return;
+  
+    root.updateMatrixWorld(true);
+  
+    // Inclinar la muñeca sobre el eje horizontal
+    const axis = new Vector3(1, 0, 0);
+    const tilt = new Quaternion().setFromAxisAngle(axis, angle);
+  
+    const worldRotation = hand.getWorldQuaternion(new Quaternion());
+    const parentRotation = hand.parent.getWorldQuaternion(new Quaternion());
+  
+    hand.quaternion.copy(
+      parentRotation.invert().multiply(tilt).multiply(worldRotation)
+    );
+  
+    root.updateMatrixWorld(true);
+  };
+  
+  // Levantar ligeramente los dedos
+  tiltHandUp("LeftHand", -0.2);
+  tiltHandUp("RightHand", -0.2);
 }

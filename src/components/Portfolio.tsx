@@ -96,6 +96,7 @@ export default function Portfolio() {
         onOpen={navigation.open}
         active={navigation.state === "idle"}
         calm={calm || reduced}
+        still={calm}
         onToggleCalm={() => setCalm((value) => !value)}
         dreamy={dreamy}
         onToggleDreamy={() => setDreamy((value) => !value)}

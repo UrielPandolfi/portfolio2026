@@ -150,7 +150,7 @@ export const objectConfig: Record<Section, ObjectConfig> = {
     position: [-1.38, 3.17, 0.48],
     rotation: [-Math.PI / 2, 0, -0.47],
     scale: 1.02,
-    labelOffset: [0, 0.28, 0.52],
+    labelOffset: [0, 0.7, 0],
     focus: [-1.05, 4.02, 4.2],
   },
   contact: {
@@ -159,9 +159,10 @@ export const objectConfig: Record<Section, ObjectConfig> = {
     subtitle: "Begin a conversation",
     numeral: "II",
     position: [-0.02, 3.0, 1.05],
-    rotation: [-Math.PI / 2, 0, 0.3],
+    // Pitched toward the camera so the face reads, with the near edge still on the desk.
+    rotation: [-Math.PI / 2 + 0.24, 0, -0.34],
     scale: 0.82,
-    labelOffset: [0, 0.16, 0.4],
+    labelOffset: [0, 0.48, 0],
     focus: [0.22, 3.95, 3.8],
   },
   about: {

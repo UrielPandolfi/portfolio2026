@@ -11,6 +11,7 @@ export function Icon({
     | "close"
     | "spark"
     | "volume"
+    | "mute"
     | "sun";
   size?: number;
 }) {
@@ -56,6 +57,12 @@ export function Icon({
       <>
         <path d="M4 9h4l5-4v14l-5-4H4Z" />
         <path d="M17 8c3 2 3 6 0 8m3-11c5 4 5 10 0 14" />
+      </>
+    ),
+    mute: (
+      <>
+        <path d="M4 9h4l5-4v14l-5-4H4Z" />
+        <path d="m16 9 5 6m0-6-5 6" />
       </>
     ),
     sun: (
