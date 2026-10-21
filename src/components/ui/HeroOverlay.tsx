@@ -15,11 +15,15 @@ export function HeroOverlay({
   active,
   calm,
   onToggleCalm,
+  dreamy,
+  onToggleDreamy,
 }: {
   onOpen: (section: Section) => void;
   active: boolean;
   calm: boolean;
   onToggleCalm: () => void;
+  dreamy: boolean;
+  onToggleDreamy: () => void;
 }) {
   return (
     <div className={`hero-ui ${active ? "" : "is-away"}`} inert={!active}>
@@ -36,15 +40,28 @@ export function HeroOverlay({
           <span className="tiny-star">✦</span> THOUGHTFULLY BUILT. ENDLESSLY
           CURIOUS.
         </div>
-        <button
-          className={`atmosphere-button ${calm ? "is-calm" : ""}`}
-          aria-label={calm ? "Enable ambient motion" : "Reduce ambient motion"}
-          aria-pressed={calm}
-          onClick={onToggleCalm}
-        >
-          <Icon name="sun" size={17} />
-          <span>{calm ? "Stillness" : "Atmosphere"}</span>
-        </button>
+        <div className="header-controls">
+          <button
+            className={`atmosphere-button ${dreamy ? "is-dreamy" : ""}`}
+            aria-label={
+              dreamy ? "Show the original render" : "Show the dreamy render"
+            }
+            aria-pressed={dreamy}
+            onClick={onToggleDreamy}
+          >
+            <Icon name="spark" size={17} />
+            <span>{dreamy ? "Dreamy" : "Original"}</span>
+          </button>
+          <button
+            className={`atmosphere-button ${calm ? "is-calm" : ""}`}
+            aria-label={calm ? "Enable ambient motion" : "Reduce ambient motion"}
+            aria-pressed={calm}
+            onClick={onToggleCalm}
+          >
+            <Icon name="sun" size={17} />
+            <span>{calm ? "Stillness" : "Atmosphere"}</span>
+          </button>
+        </div>
       </header>
       <section className="hero-title" aria-label="Introduction">
         <div className="eyebrow">

@@ -62,6 +62,7 @@ export default function Portfolio() {
   const mobile = useMobile();
   const visible = usePageVisible();
   const [calm, setCalm] = useState(false);
+  const [dreamy, setDreamy] = useState(true);
   const [ready, setReady] = useState(false);
   const markReady = useCallback(() => setReady(true), []);
   const navigation = useSceneNavigation(reduced || calm);
@@ -83,6 +84,7 @@ export default function Portfolio() {
             reducedMotion={reduced || calm}
             mobile={mobile}
             visible={visible && !navigation.isPanelOpen}
+            dreamy={dreamy}
             onReady={markReady}
           />
         </SceneBoundary>
@@ -95,6 +97,8 @@ export default function Portfolio() {
         active={navigation.state === "idle"}
         calm={calm || reduced}
         onToggleCalm={() => setCalm((value) => !value)}
+        dreamy={dreamy}
+        onToggleDreamy={() => setDreamy((value) => !value)}
       />
       {navigation.isPanelOpen && navigation.selected && (
         <ModalFrame

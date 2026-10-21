@@ -19,6 +19,7 @@ import { DustParticles } from "./DustParticles";
 import { Model } from "./Model";
 import { HybridEnvironment } from "./HybridEnvironment";
 import { CinematicEffects } from "./CinematicEffects";
+import { DreamyEffects } from "./DreamyEffects";
 
 function FramePolicy({ visible, calm }: { visible: boolean; calm: boolean }) {
   const { setFrameloop, invalidate } = useThree();
@@ -51,6 +52,7 @@ export default function Experience({
   reducedMotion,
   mobile,
   visible,
+  dreamy,
   onReady,
 }: {
   state: SceneState;
@@ -59,6 +61,7 @@ export default function Experience({
   reducedMotion: boolean;
   mobile: boolean;
   visible: boolean;
+  dreamy: boolean;
   onReady: () => void;
 }) {
   return (
@@ -136,13 +139,18 @@ export default function Experience({
               seed={candle.seed}
               intensity={candle.intensity}
               keyIntensity={candle.keyIntensity}
+              dreamy={dreamy}
             />
           </group>
         ))}
         <Ready onReady={onReady} />
       </Suspense>
       <DustParticles calm={reducedMotion} mobile={mobile} />
-      <CinematicEffects mobile={mobile} selected={selected} />
+      {dreamy ? (
+        <DreamyEffects mobile={mobile} selected={selected} />
+      ) : (
+        <CinematicEffects mobile={mobile} selected={selected} />
+      )}
     </Canvas>
   );
 }

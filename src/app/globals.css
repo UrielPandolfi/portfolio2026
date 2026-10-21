@@ -182,6 +182,11 @@ button svg {
   font-size: 12px;
   margin-right: 12px;
 }
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 .atmosphere-button {
   background: transparent;
   display: flex;
@@ -193,8 +198,12 @@ button svg {
   padding: 10px 13px;
   border-radius: 2px;
 }
-.atmosphere-button:hover {
+.atmosphere-button:hover,
+.atmosphere-button.is-dreamy {
   background: #d3b78010;
+}
+.atmosphere-button.is-dreamy {
+  border-color: #d7c09a66;
 }
 .hero-title {
   position: absolute;

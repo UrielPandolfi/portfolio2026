@@ -10,25 +10,28 @@ import {
   ShaderMaterial,
 } from "three";
 import { sceneConfig, type Vec3 } from "@/data/sceneConfig";
+import { getHazeTexture } from "@/lib/hazeTexture";
 
 const vertexShader = `varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
-const fragmentShader = `varying vec2 vUv; uniform float time;
+const fragmentShader = `varying vec2 vUv; uniform float time; uniform float gain;
 void main(){vec2 p=vUv; p.x+=(sin(p.y*8.-time*3.)*.045+sin(time*5.)*.02)*p.y;
 float width=.28*(1.-p.y)*pow(max(p.y,.001),.28); float body=1.-smoothstep(width*.45,width,abs(p.x-.5));
 float tip=smoothstep(0.,.09,p.y)*(1.-smoothstep(.8,1.,p.y));float alpha=body*tip;
-vec3 c=mix(vec3(1.,.25,.025),vec3(1.,.88,.45),body*pow(1.-p.y,.5));gl_FragColor=vec4(c*2.2,alpha);}`;
+vec3 c=mix(vec3(1.,.25,.025),vec3(1.,.88,.45),body*pow(1.-p.y,.5));gl_FragColor=vec4(c*gain,alpha);}`;
 export function CandleFlame({
   position,
   calm,
   seed = 0,
   intensity,
   keyIntensity,
+  dreamy,
 }: {
   position: Vec3;
   calm: boolean;
   seed?: number;
   intensity: number;
   keyIntensity: number;
+  dreamy: boolean;
 }) {
   const { scene, invalidate } = useThree();
   const target = useMemo(() => {
@@ -43,10 +46,12 @@ export function CandleFlame({
       scene.remove(target);
     };
   }, [scene, target, invalidate]);
+  const gain = dreamy ? sceneConfig.effects.dreamy.flameGain : 2.2;
+  const haze = useMemo(() => (dreamy ? getHazeTexture() : null), [dreamy]);
   const shader = useMemo(
     () =>
       new ShaderMaterial({
-        uniforms: { time: { value: seed } },
+        uniforms: { time: { value: seed }, gain: { value: gain } },
         vertexShader,
         fragmentShader,
         transparent: true,
@@ -55,7 +60,7 @@ export function CandleFlame({
         side: DoubleSide,
         toneMapped: false,
       }),
-    [seed],
+    [seed, gain],
   );
   const light = useRef<PointLight>(null);
   const keyLight = useRef<SpotLight>(null);
@@ -74,6 +79,22 @@ export function CandleFlame({
       <mesh material={shader} position={[0, 0.1, 0]}>
         <planeGeometry args={[0.16, 0.27]} />
       </mesh>
+      {haze && (
+        <sprite
+          position={[0, 0.2, 0]}
+          scale={sceneConfig.effects.dreamy.haze.scale}
+        >
+          <spriteMaterial
+            map={haze}
+            color={sceneConfig.effects.dreamy.haze.color}
+            transparent
+            opacity={sceneConfig.effects.dreamy.haze.opacity}
+            blending={AdditiveBlending}
+            depthWrite={false}
+            toneMapped={false}
+          />
+        </sprite>
+      )}
       <pointLight
         ref={light}
         position={[0, 0.12, 0]}

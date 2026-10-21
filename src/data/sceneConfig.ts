@@ -101,6 +101,42 @@ export const sceneConfig = {
     aperture: 0.0045,
     maxBlur: 0.006,
     resolution: 0.9,
+    // Dreamy look. The original pass stays available for comparison.
+    dreamy: {
+      flameGain: 2.7,
+      bloom: {
+        intensity: 0.38,
+        mobileIntensity: 0.26,
+        luminanceThreshold: 1.85,
+        luminanceSmoothing: 0.08,
+        radius: 0.62,
+        levels: 6,
+        mobileLevels: 4,
+      },
+      depthOfField: {
+        // Blur starts at the focal plane, so the range has to cover the desk and the sitter.
+        focusRange: 8.5,
+        focusRangeSelected: 2.6,
+        bokehScale: 2.35,
+        resolutionScale: 0.5,
+      },
+      grade: {
+        exposure: 0.8,
+        amber: 0.08,
+        cool: 0.18,
+        contrast: 0.03,
+      },
+      grain: 0.11,
+      vignette: {
+        offset: 0.46,
+        darkness: 0.28,
+      },
+      haze: {
+        color: "#ffb56a",
+        opacity: 0.05,
+        scale: 0.82,
+      },
+    },
   },
   window: { video: null as string | null },
 };
