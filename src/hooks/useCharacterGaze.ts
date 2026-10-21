@@ -1,13 +1,13 @@
 "use client";
-import { useEffect, useMemo, useRef, type RefObject } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { Group, Object3D, Vector2 } from "three";
+import { Object3D, Vector2 } from "three";
 import { characterBehavior } from "@/data/characterConfig";
+import { BreathRig } from "@/lib/breath";
 import { GazeMotion, GazeRig } from "@/lib/characterGaze";
 
 export function useCharacterGaze(
   root: Object3D,
-  breathingGroup: RefObject<Group | null>,
   calm: boolean,
   active: boolean,
 ) {
@@ -18,6 +18,7 @@ export function useCharacterGaze(
     () => new GazeRig(root, characterBehavior.neckShare),
     [root],
   );
+  const breath = useMemo(() => new BreathRig(root), [root]);
   useEffect(() => {
     controller.current = new GazeMotion(characterBehavior);
     const surface = gl.domElement.closest("main") ?? gl.domElement;
@@ -51,11 +52,12 @@ export function useCharacterGaze(
     const motion = controller.current;
     if (!motion) return;
     motion.step(delta, pointer.current.x, pointer.current.y, active, calm);
-    rig.apply(motion.yaw, motion.pitch);
-    if (breathingGroup.current)
-      breathingGroup.current.position.y = calm
+    breath.apply(
+      calm
         ? 0
         : Math.sin(motion.time * characterBehavior.breathingSpeed) *
-          characterBehavior.breathingAmplitude;
+            characterBehavior.breathingAmplitude,
+    );
+    rig.apply(motion.yaw, motion.pitch);
   });
 }

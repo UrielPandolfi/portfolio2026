@@ -156,6 +156,46 @@ test("provided FBX has functional skinning and a seated pose that preserves bone
   gaze.restore();
   assert.ok(head.quaternion.angleTo(headRest) < 1e-6);
   assert.ok(neck.quaternion.angleTo(neckRest) < 1e-6);
+  const { BreathRig } = await dataModule("src/lib/breath.ts");
+  const breath = new BreathRig(model);
+  const hands = ["Left", "Right"].map((side) =>
+    findBone(model, `${side}Hand`).getWorldPosition(new Vector3()),
+  );
+  const headHeight = head.getWorldPosition(new Vector3()).y;
+  const hipHeight = findBone(model, "Hips").getWorldPosition(new Vector3()).y;
+  const shoulderHeight = findBone(model, "LeftShoulder").getWorldPosition(
+    new Vector3(),
+  ).y;
+  breath.apply(0.02);
+  hands.forEach((rest, index) => {
+    const side = index === 0 ? "Left" : "Right";
+    const moved = findBone(model, `${side}Hand`).getWorldPosition(
+      new Vector3(),
+    );
+    assert.ok(
+      moved.distanceTo(rest) < 1e-3,
+      `${side} hand stays on the desktop while the chest rises`,
+    );
+  });
+  assert.ok(
+    head.getWorldPosition(new Vector3()).y > headHeight + 0.015,
+    "Head rises with the breath",
+  );
+  assert.ok(
+    findBone(model, "LeftShoulder").getWorldPosition(new Vector3()).y >
+      shoulderHeight + 0.015,
+    "Shoulders rise with the breath",
+  );
+  assert.ok(
+    Math.abs(
+      findBone(model, "Hips").getWorldPosition(new Vector3()).y - hipHeight,
+    ) < 1e-4,
+    "Hips stay seated",
+  );
+  breath.apply(0);
+  assert.ok(
+    Math.abs(head.getWorldPosition(new Vector3()).y - headHeight) < 1e-3,
+  );
 });
 
 test("project data supports automatic page pairs and explicitly marks demonstrations", async () => {

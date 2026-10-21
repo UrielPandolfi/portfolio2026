@@ -1,11 +1,10 @@
 "use client";
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { useLoader } from "@react-three/fiber";
 import { useGLTF, useTexture } from "@react-three/drei";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 import {
-  Group,
   LoadingManager,
   Mesh,
   MeshStandardMaterial,
@@ -38,7 +37,6 @@ function ExistingPhilosopher({
 }) {
   const source = useLoader(fbxLoader, assets.philosopher.url);
   const maps = useTexture(assets.philosopher.textures);
-  const group = useRef<Group>(null);
   const character = useMemo(() => {
     const object = clone(source);
     const base = maps.basecolor.clone();
@@ -59,15 +57,13 @@ function ExistingPhilosopher({
     applySeatedPose(object);
     return object;
   }, [source, maps]);
-  useCharacterGaze(character, group, calm, selected === null);
+  useCharacterGaze(character, calm, selected === null);
   return (
     <group
       position={sceneConfig.philosopher.position}
       scale={sceneConfig.philosopher.scale}
     >
-      <group ref={group}>
-        <primitive object={character} dispose={null} />
-      </group>
+      <primitive object={character} dispose={null} />
     </group>
   );
 }
@@ -86,16 +82,13 @@ function ReplacementPhilosopher({
     prepareImportedModel(model, materialProfiles.philosopher);
     return model;
   }, [scene]);
-  const group = useRef<Group>(null);
-  useCharacterGaze(object, group, calm, selected === null);
+  useCharacterGaze(object, calm, selected === null);
   return (
     <group
       position={sceneConfig.philosopher.position}
       scale={sceneConfig.philosopher.scale}
     >
-      <group ref={group}>
-        <primitive object={object} dispose={null} />
-      </group>
+      <primitive object={object} dispose={null} />
     </group>
   );
 }
