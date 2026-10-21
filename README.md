@@ -27,7 +27,8 @@ npm start
 
 - `src/data/projects.ts`: cada objeto crea dos páginas, imagen y descripción. Se incluyen tres **demostraciones**, sin atribuir trabajos reales ni inventar enlaces. Las imágenes ilustrativas son recortes del fondo proporcionado, no capturas de proyectos.
 - `src/data/profile.ts`: presentación, especialidades, stack, reflexiones y contactos. Reemplazar los valores `null` de email, GitHub y LinkedIn para activar enlaces reales.
-- `src/data/sceneConfig.ts`: posiciones, escalas, rotaciones, cámara, área de ventana y GLB futuro del personaje.
+- `src/data/sceneConfig.ts`: composición completa: cámaras de escritorio/móvil, transformaciones de objetos, velas, luz de ventana, sombras, entorno y profundidad de campo.
+- `src/lib/sceneMaterials.ts`: brillo, rugosidad mínima y metalicidad por recurso; elimina luces importadas, emisión y mapas de iluminación de los materiales de ejecución.
 - `src/data/assets.json`: manifiesto generado con rutas verificadas, tamaños y fuentes originales.
 
 Para un proyecto real, establecer `demo: false`, una imagen en `public/`, su año y una URL `https://…`. La cantidad de páginas y capítulos se calcula automáticamente. `year` acepta string para admitir tanto años como la marca `Demo`.
@@ -52,16 +53,18 @@ Ver `docs/ASSETS.md` para la auditoría y el flujo de Blender. La pose es funcio
 
 ## Rendimiento y ambiente
 
-- Fondo 2D estático con la imagen original y contraste cálido/frío.
-- Velas duplicadas compartiendo geometrías y materiales, llama procedural, dos luces locales sin sombras dinámicas.
-- Partículas en un solo `BufferGeometry`; 85 en escritorio y 28 en móvil.
+- Entorno híbrido: imagen original como plano lejano, suelo, pared oscura, jambas, arco, parteluz, alféizar y bordes de estantes en 3D.
+- Cámara más próxima y baja, ligeramente desplazada lateralmente. Libro y carta pequeños y diagonales; busto mayor en tres cuartos y reloj detrás del busto. Etiquetas solo al pasar el cursor; navegación HTML siempre disponible.
+- Dos velas asimétricas comparten geometría y materiales. Luces locales con parpadeo mínimo y una luz principal con sombras desde la vela izquierda. Un solo mapa de sombras de 1024² se actualiza cada 180 ms. Relleno frío de ventana muy suave, sin HDRI ni luz hemisférica.
+- Materiales PBR ajustados en copias de ejecución: sin emisión, light maps ni reflejos de entorno; rugosidad mínima conservando los mapas originales. Los archivos originales permanecen intactos.
+- Polvo con luminosidad según proximidad a las velas, en un solo `BufferGeometry`; 85 partículas en escritorio y 28 en móvil. Niebla de profundidad sutil.
 - DPR máximo 1,35 / 1,1 y antialias desactivado para un acabado ligeramente retro.
-- Grano CSS sutil y halos de vela; sin compositor de bloom/DOF de pantalla completa para contener el costo.
+- Profundidad de campo suave en escritorio usando la textura de profundidad del render de color, sin repetir la geometría en un segundo pase. Se desactiva en móvil. Exposición ACES y grano sutil.
 - Render pausado con la pestaña oculta; modo de quietud usa render bajo demanda.
 - Tipografías locales. La aplicación no depende de Google Fonts ni de un CDN de modelos.
 - Las mallas originales siguen siendo densas (~2,35 M de triángulos antes de duplicar la vela). Una exportación LOD desde Blender queda como siguiente optimización para dispositivos modestos; no se garantiza 60 fps en todos los móviles.
 
-La lluvia está limitada a la zona de la ventana. `sceneConfig.window.video` acepta un futuro WebM/MP4 local; la capa ya comparte el encuadre del fondo y una máscara independiente. Se recomienda un loop sin audio con el marco y el parteluz preservados en una máscara más precisa.
+La lluvia es un shader en el plano 3D de la ventana, con máscara de arco y parteluz. `sceneConfig.window.video` acepta un futuro WebM/MP4 local alineado con ese plano; para usarlo debe prepararse un loop sin audio que preserve el marco. El modo quietud detiene lluvia, parpadeo, polvo y movimiento del personaje.
 
 ## Verificación
 

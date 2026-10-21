@@ -5,7 +5,18 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import ts from "typescript";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
-import { LoadingManager, TextureLoader, Texture, Vector3 } from "three";
+import {
+  LoadingManager,
+  TextureLoader,
+  Texture,
+  Vector3,
+  Group,
+  Mesh,
+  BoxGeometry,
+  MeshStandardMaterial,
+  MeshBasicMaterial,
+  PointLight,
+} from "three";
 
 const manifest = JSON.parse(await fs.readFile("src/data/assets.json", "utf8"));
 function glbJSON(bytes) {
@@ -147,4 +158,60 @@ test("project data supports automatic page pairs and explicitly marks demonstrat
       `Invalid ${key} contact value`,
     );
   }
+});
+
+test("imported materials cannot add emission, baked light maps or hidden lights to the scene", async () => {
+  const { prepareImportedModel, materialProfiles } = await dataModule(
+    "src/lib/sceneMaterials.ts",
+  );
+  const root = new Group();
+  const nested = new Group();
+  const map = new Texture();
+  const source = new MeshStandardMaterial({
+    map,
+    emissive: "#ffffff",
+    emissiveIntensity: 8,
+    roughness: 0.05,
+    metalness: 1,
+    envMap: map,
+    lightMap: map,
+  });
+  const unlit = new MeshBasicMaterial({ color: "#cccccc", map });
+  const mesh = new Mesh(new BoxGeometry(), [source, unlit]);
+  nested.add(new PointLight(), mesh);
+  root.add(nested);
+  assert.equal(
+    prepareImportedModel(root, materialProfiles.book).removedLights,
+    1,
+  );
+  root.traverse((object) => assert.ok(!object.isLight));
+  for (const material of mesh.material) {
+    assert.ok(material instanceof MeshStandardMaterial);
+    assert.equal(material.map, map, "Preserve the authored base-color texture");
+    assert.equal(material.emissiveIntensity, 0);
+    assert.equal(material.emissive.getHex(), 0);
+    assert.equal(material.envMap, null);
+    assert.equal(material.lightMap, null);
+    assert.equal(material.roughness, 1);
+    assert.ok(material.metalness < 0.1);
+    const shader = { fragmentShader: "#include <roughnessmap_fragment>" };
+    material.onBeforeCompile(shader);
+    assert.match(shader.fragmentShader, /max\(roughnessFactor, 0\.860\)/);
+  }
+  assert.ok(mesh.castShadow && mesh.receiveShadow);
+  assert.equal(
+    source.emissiveIntensity,
+    8,
+    "Never alter loader-cached source materials",
+  );
+  assert.equal(source.roughness, 0.05);
+  const second = new Group();
+  const copy = new Mesh(mesh.geometry, source);
+  second.add(copy);
+  prepareImportedModel(second, materialProfiles.book);
+  assert.equal(
+    copy.material,
+    mesh.material[0],
+    "Instances share the same adjusted material",
+  );
 });

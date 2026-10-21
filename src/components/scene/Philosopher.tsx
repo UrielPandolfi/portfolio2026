@@ -18,6 +18,7 @@ import {
 import { sceneConfig, type Section } from "@/data/sceneConfig";
 import assets from "@/data/assets.json";
 import { applySeatedPose, findBone } from "@/lib/pose";
+import { materialProfiles, prepareImportedModel } from "@/lib/sceneMaterials";
 
 class DeferredTextureLoader extends TextureLoader {
   override load() {
@@ -52,9 +53,10 @@ function ExistingPhilosopher({
           roughnessMap: maps.roughness,
           metalnessMap: maps.metallic,
           roughness: 1,
-          metalness: 0.15,
+          metalness: 0,
         });
     });
+    prepareImportedModel(object, materialProfiles.philosopher);
     applySeatedPose(object);
     return object;
   }, [source, maps]);
@@ -98,7 +100,11 @@ function ExistingPhilosopher({
 }
 function ReplacementPhilosopher({ url }: { url: string }) {
   const { scene } = useGLTF(url);
-  const object = useMemo(() => clone(scene), [scene]);
+  const object = useMemo(() => {
+    const model = clone(scene);
+    prepareImportedModel(model, materialProfiles.philosopher);
+    return model;
+  }, [scene]);
   return (
     <group
       position={sceneConfig.philosopher.position}

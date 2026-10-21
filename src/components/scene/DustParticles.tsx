@@ -2,6 +2,23 @@
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Points } from "three";
+import { sceneConfig } from "@/data/sceneConfig";
+const vertexShader = `
+uniform vec3 candleA; uniform vec3 candleB;
+varying float illumination;
+void main(){
+  vec4 world=modelMatrix*vec4(position,1.);
+  vec4 view=modelViewMatrix*vec4(position,1.);
+  float a=length(world.xyz-candleA), b=length(world.xyz-candleB);
+  illumination=.045+.3*exp(-a*a*.28)+.2*exp(-b*b*.4);
+  gl_PointSize=clamp(13./-view.z,1.,3.);
+  gl_Position=projectionMatrix*view;
+}`;
+const fragmentShader = `
+varying float illumination;
+void main(){float d=length(gl_PointCoord-.5);float alpha=(1.-smoothstep(.08,.5,d))*illumination;
+gl_FragColor=vec4(.83,.64,.37,alpha);
+}`;
 export function DustParticles({
   calm,
   mobile,
@@ -11,6 +28,21 @@ export function DustParticles({
 }) {
   const points = useRef<Points>(null);
   const count = mobile ? 28 : 85;
+  const uniforms = useMemo(
+    () => ({
+      candleA: {
+        value: sceneConfig.candles[0].position.map(
+          (v, i) => v + (i === 1 ? 0.9 : 0),
+        ),
+      },
+      candleB: {
+        value: sceneConfig.candles[1].position.map(
+          (v, i) => v + (i === 1 ? 0.7 : 0),
+        ),
+      },
+    }),
+    [],
+  );
   const positions = useMemo(() => {
     const array = new Float32Array(count * 3);
     let seed = 147;
@@ -20,8 +52,8 @@ export function DustParticles({
     };
     for (let index = 0; index < count; index++) {
       array[index * 3] = (random() - 0.5) * 8;
-      array[index * 3 + 1] = 1.8 + random() * 4;
-      array[index * 3 + 2] = (random() - 0.5) * 4;
+      array[index * 3 + 1] = 3.3 + random() * 3;
+      array[index * 3 + 2] = -3 + random() * 5;
     }
     return array;
   }, [count]);
@@ -36,13 +68,12 @@ export function DustParticles({
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
-      <pointsMaterial
-        size={mobile ? 0.014 : 0.012}
-        color="#e3bf83"
+      <shaderMaterial
+        uniforms={uniforms}
+        vertexShader={vertexShader}
+        fragmentShader={fragmentShader}
         transparent
-        opacity={0.32}
         depthWrite={false}
-        sizeAttenuation
       />
     </points>
   );

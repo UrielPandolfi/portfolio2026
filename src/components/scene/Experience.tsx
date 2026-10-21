@@ -2,7 +2,7 @@
 import { Suspense, useEffect } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { useProgress } from "@react-three/drei";
-import { ACESFilmicToneMapping } from "three";
+import { ACESFilmicToneMapping, PCFSoftShadowMap } from "three";
 import {
   sceneConfig,
   sections,
@@ -17,6 +17,8 @@ import { InteractiveObject } from "./InteractiveObject";
 import { CandleFlame } from "./CandleFlame";
 import { DustParticles } from "./DustParticles";
 import { Model } from "./Model";
+import { HybridEnvironment } from "./HybridEnvironment";
+import { CinematicEffects } from "./CinematicEffects";
 
 function FramePolicy({ visible, calm }: { visible: boolean; calm: boolean }) {
   const { setFrameloop, invalidate } = useThree();
@@ -61,6 +63,7 @@ export default function Experience({
 }) {
   return (
     <Canvas
+      shadows={{ type: PCFSoftShadowMap }}
       dpr={mobile ? [1, 1.1] : [1, 1.35]}
       camera={{
         position: sceneConfig.camera.position,
@@ -73,7 +76,7 @@ export default function Experience({
         alpha: true,
         powerPreference: "high-performance",
         toneMapping: ACESFilmicToneMapping,
-        toneMappingExposure: 1.05,
+        toneMappingExposure: sceneConfig.lighting.exposure,
       }}
       fallback={
         <span>
@@ -89,7 +92,18 @@ export default function Experience({
         reducedMotion={reducedMotion}
         mobile={mobile}
       />
-      <SceneLighting />
+      <fog
+        attach="fog"
+        args={[
+          sceneConfig.environment.fog.color,
+          sceneConfig.environment.fog.near,
+          sceneConfig.environment.fog.far,
+        ]}
+      />
+      <SceneLighting calm={reducedMotion} />
+      <Suspense fallback={null}>
+        <HybridEnvironment calm={reducedMotion || !visible} />
+      </Suspense>
       <Suspense fallback={null}>
         <Desk />
       </Suspense>
@@ -112,21 +126,28 @@ export default function Experience({
           />
         ))}
         <group position={sceneConfig.ink.position}>
-          <Model name="ink" scale={sceneConfig.ink.scale} />
+          <Model
+            name="ink"
+            scale={sceneConfig.ink.scale}
+            rotation={sceneConfig.ink.rotation}
+          />
         </group>
-        {sceneConfig.candles.map((position, index) => (
-          <group key={index} position={position}>
-            <Model name="candle" scale={index ? 0.59 : 0.74} />
+        {sceneConfig.candles.map((candle, index) => (
+          <group key={index} position={candle.position}>
+            <Model name="candle" scale={candle.scale} />
             <CandleFlame
-              position={[0, index ? 0.59 : 0.74, 0]}
+              position={[0, candle.scale, 0]}
               calm={reducedMotion}
-              seed={index * 5}
+              seed={candle.seed}
+              intensity={candle.intensity}
+              keyIntensity={candle.keyIntensity}
             />
           </group>
         ))}
         <Ready onReady={onReady} />
       </Suspense>
       <DustParticles calm={reducedMotion} mobile={mobile} />
+      <CinematicEffects mobile={mobile} selected={selected} />
     </Canvas>
   );
 }

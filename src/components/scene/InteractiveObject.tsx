@@ -32,7 +32,7 @@ export function InteractiveObject({
     if (!group.current) return;
     group.current.position.y = MathUtils.damp(
       group.current.position.y,
-      hovered && enabled && !reducedMotion ? 0.035 : 0,
+      hovered && enabled && !reducedMotion ? 0.012 : 0,
       8,
       delta,
     );
@@ -61,20 +61,12 @@ export function InteractiveObject({
           scale={config.scale}
           rotation={config.rotation}
         />
-        {hovered && enabled && (
-          <pointLight
-            position={[0, 0.65, 0.6]}
-            intensity={0.5}
-            color="#ffda92"
-            distance={2}
-          />
-        )}
       </group>
       <Html
         position={config.labelOffset}
         center
         zIndexRange={[5, 1]}
-        style={{ display: enabled ? "block" : "none" }}
+        style={{ display: enabled ? "block" : "none", pointerEvents: "none" }}
       >
         <button
           className={`object-label ${hovered ? "is-hovered" : ""}`}

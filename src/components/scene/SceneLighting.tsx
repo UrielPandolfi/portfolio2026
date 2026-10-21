@@ -1,16 +1,45 @@
-export function SceneLighting() {
+"use client";
+import { useEffect, useMemo, useRef } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
+import { Object3D } from "three";
+import { sceneConfig } from "@/data/sceneConfig";
+
+export function SceneLighting({ calm }: { calm: boolean }) {
+  const { gl, invalidate } = useThree();
+  const lastShadow = useRef(-Infinity);
+  const target = useMemo(() => {
+    const object = new Object3D();
+    object.position.set(...sceneConfig.lighting.window.target);
+    return object;
+  }, []);
+  useEffect(() => {
+    gl.shadowMap.autoUpdate = false;
+    gl.shadowMap.needsUpdate = true;
+    invalidate();
+    return () => {
+      gl.shadowMap.autoUpdate = true;
+    };
+  }, [gl, invalidate]);
+  // One shadow map, refreshed at a bounded rate; flicker needs no shadow redraw.
+  useFrame(({ clock }) => {
+    if (
+      calm ||
+      clock.elapsedTime - lastShadow.current >
+        sceneConfig.lighting.shadow.refreshInterval
+    ) {
+      gl.shadowMap.needsUpdate = true;
+      lastShadow.current = clock.elapsedTime;
+    }
+  }, -2);
   return (
     <>
-      <ambientLight intensity={0.55} color="#c5b4a0" />
-      <hemisphereLight args={["#b0b8c7", "#32261b", 1.15]} />
-      <directionalLight position={[-3, 6, 4]} color="#ffcd8e" intensity={2.5} />
-      <directionalLight position={[4, 5, -3]} color="#92aedc" intensity={1.5} />
-      <pointLight
-        position={[0, 5, 2]}
-        intensity={8}
-        color="#e8b775"
-        distance={12}
-        decay={2}
+      <ambientLight intensity={sceneConfig.lighting.ambient} color="#a5a6a0" />
+      <primitive object={target} />
+      <directionalLight
+        position={sceneConfig.lighting.window.position}
+        target={target}
+        color={sceneConfig.lighting.window.color}
+        intensity={sceneConfig.lighting.window.intensity}
       />
     </>
   );

@@ -5,6 +5,7 @@ import { useGLTF } from "@react-three/drei";
 import { Box3, Group, Vector3 } from "three";
 import assets from "@/data/assets.json";
 import type { Vec3 } from "@/data/sceneConfig";
+import { materialProfiles, prepareImportedModel } from "@/lib/sceneMaterials";
 
 export type ModelName =
   | "desk"
@@ -27,8 +28,9 @@ export function Model({
   const { scene } = useGLTF(assets[name].url);
   const [rx, ry, rz] = rotation;
   const prepared = useMemo(() => {
-    // Clones share immutable geometries and original materials, including both candle instances.
+    // Geometry/maps stay shared. Controlled variants never mutate loaded materials.
     const model = scene.clone(true);
+    prepareImportedModel(model, materialProfiles[name]);
     model.rotation.set(rx, ry, rz);
     model.scale.setScalar(scale);
     model.updateMatrixWorld(true);
@@ -38,6 +40,6 @@ export function Model({
     const group = new Group();
     group.add(model);
     return group;
-  }, [scene, scale, rx, ry, rz]);
+  }, [scene, name, scale, rx, ry, rz]);
   return <primitive object={prepared} dispose={null} />;
 }

@@ -18,7 +18,7 @@ import {
   usePageVisible,
   useReducedMotion,
 } from "@/hooks/usePreferences";
-import { objectConfig, sceneConfig } from "@/data/sceneConfig";
+import { objectConfig } from "@/data/sceneConfig";
 
 const Experience = dynamic(() => import("./scene/Experience"), { ssr: false });
 const LoadingStatus = dynamic(
@@ -65,41 +65,12 @@ export default function Portfolio() {
   const [ready, setReady] = useState(false);
   const markReady = useCallback(() => setReady(true), []);
   const navigation = useSceneNavigation(reduced || calm);
-  const windowConfig = sceneConfig.window;
   return (
     <main
       className={`portfolio ${calm || reduced ? "is-still" : ""}`}
       data-scene-state={navigation.state}
     >
       <div className="room-background" aria-hidden="true" />
-      <div className="window-layer" aria-hidden="true">
-        <div className="window-image-space">
-          <div
-            className="window-mask"
-            style={{
-              left: `${windowConfig.left}%`,
-              top: `${windowConfig.top}%`,
-              width: `${windowConfig.width}%`,
-              height: `${windowConfig.height}%`,
-            }}
-          >
-            {windowConfig.video ? (
-              <video
-                src={windowConfig.video}
-                autoPlay={!reduced && !calm}
-                loop
-                muted
-                playsInline
-              />
-            ) : (
-              <div
-                className="window-rain"
-                style={{ animationPlayState: visible ? undefined : "paused" }}
-              />
-            )}
-          </div>
-        </div>
-      </div>
       <div
         className={`scene-layer ${navigation.isPanelOpen ? "is-focused" : ""}`}
         aria-hidden={navigation.state !== "idle"}

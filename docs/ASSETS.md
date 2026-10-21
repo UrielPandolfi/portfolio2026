@@ -13,9 +13,11 @@ Fuentes: `Assets/`. Manifiesto: `src/data/assets.json`. Copias de ejecución: `p
 | antique+candle+3d+model             | GLB                       | Una malla, mapa basecolor. Se reutiliza dos veces y se agrega la llama por separado.                                           |
 | antique+hourglass+3d+model          | GLB                       | Una malla y mapa basecolor. Arena y vidrio forman parte del asset; no se simula arena física.                                  |
 | antique+ink+bottle+3d+model         | GLB                       | Incluye tintero y pluma en una malla.                                                                                          |
-| Stormlit Scholar’s Observatory      | PNG 1672 × 941            | Habitación sin persona ni escritorio; se convierte a WebP. No se reconstruye la habitación.                                    |
+| Stormlit Scholar’s Observatory      | PNG 1672 × 941            | Habitación sin persona ni escritorio; se convierte a WebP y se usa como plano lejano detrás de arquitectura 3D parcial.           |
 
-Los GLB no contienen esqueletos ni animaciones. Todos contienen texturas embebidas. La mayoría usa normal, basecolor y metallic/roughness combinados; vela y reloj contienen basecolor solamente. Cada malla tiene entre aproximadamente 280 mil y 303 mil triángulos. Meshopt reduce la transferencia, no el número de triángulos.
+Los GLB no contienen esqueletos, animaciones, luces `KHR_lights_punctual` ni materiales emisivos. Todos contienen texturas embebidas. La mayoría usa normal, basecolor y metallic/roughness combinados; vela y reloj contienen basecolor solamente. Cada malla tiene entre aproximadamente 280 mil y 303 mil triángulos. Meshopt reduce la transferencia, no el número de triángulos.
+
+`sceneMaterials.ts` aplica la misma política a los GLB, al FBX y a un futuro personaje de reemplazo: quitar cualquier luz importada, convertir materiales unlit a PBR, anular emisión/entorno/light maps y reducir reflectividad. Se clonan los materiales y se comparten geometrías y texturas originales. El mapa de rugosidad conserva variaciones por encima de un mínimo por recurso. Los highlights pintados en basecolor siguen siendo parte de la textura; la corrección de color reduce su brillo, pero no los elimina selectivamente.
 
 ## Personaje
 
@@ -25,7 +27,7 @@ Jerarquía: `Hips → Spine → Spine1 → Spine2 → Neck → Head`; hombros y 
 
 Los ejes locales de ambos brazos no son simétricos. `src/lib/pose.ts` orienta cada segmento mediante quaternions en mundo, convierte al espacio del padre y conserva el twist. No alarga huesos, no reescribe skin weights y no simula clips inexistentes. La pose se aplica antes de posicionar y escalar el personaje dentro de la escena.
 
-El exportador dejó rutas `/mnt/pfs/…fbm` que no existen en el proyecto. Un cargador de texturas diferido evita peticiones inválidas. Después se aplican los cuatro mapas reales provistos a `MeshStandardMaterial`: basecolor sRGB, mapas técnicos sin conversión. Los materiales GLB se conservan.
+El exportador dejó rutas `/mnt/pfs/…fbm` que no existen en el proyecto. Un cargador de texturas diferido evita peticiones inválidas. Después se aplican los cuatro mapas reales provistos a `MeshStandardMaterial`: basecolor sRGB, mapas técnicos sin conversión. Los materiales de ejecución reciben el ajuste mate y de exposición descrito arriba.
 
 ## Ajuste recomendado en Blender
 
@@ -40,4 +42,4 @@ Para acercarse a la referencia conceptual, el mayor beneficio estará en la pose
 
 ## Futuro video de ventana
 
-El área se define en porcentajes de la imagen original. El fondo y su máscara usan el mismo comportamiento `cover`, incluyendo el cambio de encuadre móvil. Para un resultado final preciso, crear una máscara alfa que excluya los marcos y el parteluz, y suministrar el video silencioso. Actualmente se muestra una lluvia CSS leve y localizada, desactivable con Atmosphere o movimiento reducido.
+El área se define ahora en coordenadas 3D en `sceneConfig.environment.window`; el plano de fondo, el marco y la lluvia comparten el mismo espacio. Actualmente la lluvia procedural usa una máscara de arco y parteluz, desactivable con Atmosphere o movimiento reducido. Para usar un video, proporcionar un loop silencioso preparado para conservar la silueta y el marco de esta ventana. El componente pausa el video en modo quietud o con la escena inactiva; no hay un clip proporcionado para comprobar la integración visual.
