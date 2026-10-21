@@ -16,6 +16,11 @@ import {
   MeshStandardMaterial,
   MeshBasicMaterial,
   PointLight,
+  Bone,
+  Quaternion,
+  AnimationMixer,
+  AnimationClip,
+  QuaternionKeyframeTrack,
 } from "three";
 
 const manifest = JSON.parse(await fs.readFile("src/data/assets.json", "utf8"));
@@ -129,6 +134,28 @@ test("provided FBX has functional skinning and a seated pose that preserves bone
       `${side} hand should stay near the desktop`,
     );
   }
+  const { GazeRig } = await dataModule("src/lib/characterGaze.ts");
+  const head = findBone(model, "Head"),
+    neck = findBone(model, "Neck");
+  const end = findBone(model, "HeadTopEnd");
+  const headRest = head.quaternion.clone(),
+    neckRest = neck.quaternion.clone();
+  const direction = () =>
+    end
+      .getWorldPosition(new Vector3())
+      .sub(head.getWorldPosition(new Vector3()))
+      .normalize();
+  const before = direction();
+  const gaze = new GazeRig(model, 0.28);
+  gaze.apply(0, 0.14);
+  const after = direction();
+  assert.ok(
+    after.z > before.z + 0.1,
+    "Positive pitch tips the actual FBX head forward/down",
+  );
+  gaze.restore();
+  assert.ok(head.quaternion.angleTo(headRest) < 1e-6);
+  assert.ok(neck.quaternion.angleTo(neckRest) < 1e-6);
 });
 
 test("project data supports automatic page pairs and explicitly marks demonstrations", async () => {
@@ -214,4 +241,131 @@ test("imported materials cannot add emission, baked light maps or hidden lights 
     mesh.material[0],
     "Instances share the same adjusted material",
   );
+});
+
+test("gaze remains bounded, frame-rate independent, and returns to its contemplative pose", async () => {
+  const { GazeMotion, lookupEnvelope } = await dataModule(
+    "src/lib/characterGaze.ts",
+  );
+  const { characterBehavior: config } = await dataModule(
+    "src/data/characterConfig.ts",
+  );
+  const run = (fps) => {
+    const motion = new GazeMotion(config, () => 0.5);
+    for (let i = 0; i < fps * 2; i++)
+      motion.step(1 / fps, 100, -100, true, false);
+    return motion;
+  };
+  const a = run(30),
+    b = run(60);
+  assert.ok(Math.abs(a.yaw - b.yaw) < 1e-8);
+  assert.ok(Math.abs(a.pitch - b.pitch) < 1e-8);
+  assert.ok(a.yaw <= config.yawLimit * config.followStrength);
+  assert.ok(a.pitch <= config.pitchMax);
+  assert.equal(lookupEnvelope(0, config), 0);
+  assert.equal(lookupEnvelope(config.lookupRise, config), 1);
+  assert.equal(
+    lookupEnvelope(
+      config.lookupRise + config.lookupHold + config.lookupReturn,
+      config,
+    ),
+    0,
+  );
+  const gesture = new GazeMotion(config, () => 0);
+  let lowest = config.idleDownAngle;
+  for (let i = 0; i < 60 * 16; i++) {
+    gesture.step(1 / 60, 0, 0, true, false);
+    lowest = Math.min(lowest, gesture.pitch);
+    assert.ok(
+      gesture.pitch >= config.pitchMin && gesture.pitch <= config.pitchMax,
+    );
+  }
+  assert.ok(
+    lowest < config.idleDownAngle - config.lookupAmount * 0.75,
+    "Occasional lift occurs",
+  );
+  assert.ok(
+    Math.abs(gesture.pitch - config.idleDownAngle) < 0.002,
+    "Returns smoothly after the gesture",
+  );
+  const time = gesture.time;
+  gesture.step(60, 1, 1, false, false);
+  assert.equal(
+    gesture.time,
+    time,
+    "Panel/hidden time cannot trigger a surprise gesture",
+  );
+  gesture.step(1 / 60, 1, 1, true, true);
+  assert.equal(gesture.pitch, config.idleDownAngle);
+  assert.equal(gesture.yaw, 0);
+  assert.ok(
+    new GazeMotion(config, () => 0).nextLookup === config.lookupIntervalMin,
+  );
+  assert.ok(
+    new GazeMotion(config, () => 1).nextLookup === config.lookupIntervalMax,
+  );
+});
+
+test("gaze rotates head/neck additively without accumulating offsets or replacing mixer animation", async () => {
+  const { GazeRig, inspectGazeRig } = await dataModule(
+    "src/lib/characterGaze.ts",
+  );
+  const root = new Group(),
+    neck = new Bone(),
+    head = new Bone(),
+    spine = new Bone();
+  spine.name = "mixamorigSpine2";
+  neck.name = "mixamorigNeck";
+  head.name = "mixamorigHead";
+  root.add(spine);
+  spine.add(neck);
+  neck.add(head);
+  head.position.y = 0.2;
+  spine.rotation.set(0.05, -0.1, 0.04);
+  root.updateMatrixWorld(true);
+  const rig = new GazeRig(root, 0.28);
+  assert.equal(inspectGazeRig(root).head, head);
+  const original = head.quaternion.clone(),
+    neckOriginal = neck.quaternion.clone(),
+    spineOriginal = spine.quaternion.clone();
+  for (let i = 0; i < 1000; i++) {
+    rig.restore();
+    rig.apply(0.08, 0.14);
+  }
+  assert.ok(head.quaternion.angleTo(original) > 0.05);
+  assert.ok(neck.quaternion.angleTo(neckOriginal) > 0.02);
+  assert.ok(spine.quaternion.equals(spineOriginal));
+  assert.equal(head.position.y, 0.2);
+  rig.restore();
+  assert.ok(head.quaternion.angleTo(original) < 1e-6);
+  assert.ok(neck.quaternion.angleTo(neckOriginal) < 1e-6);
+  const end = new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), 0.3);
+  const clip = new AnimationClip("idle", 1, [
+    new QuaternionKeyframeTrack(
+      "mixamorigHead.quaternion",
+      [0, 1],
+      [...original.toArray(), ...end.toArray()],
+    ),
+  ]);
+  const mixer = new AnimationMixer(root);
+  mixer.clipAction(clip).play();
+  mixer.update(0.5);
+  const animated = head.quaternion.clone();
+  rig.apply(0.05, 0.12);
+  rig.restore();
+  assert.ok(
+    head.quaternion.angleTo(animated) < 1e-6,
+    "Restore preserves the current animated pose",
+  );
+  const noHead = new Group(),
+    chest = new Bone();
+  chest.name = "upperChest";
+  noHead.add(chest);
+  new GazeRig(noHead, 0.28).apply(0.1, 0.14);
+  assert.ok(chest.quaternion.angleTo(new Quaternion()) > 0);
+  assert.ok(
+    chest.quaternion.angleTo(new Quaternion()) < 0.06,
+    "Torso fallback has reduced amplitude",
+  );
+  assert.doesNotThrow(() => new GazeRig(new Group(), 0.28).apply(0.1, 0.1));
 });

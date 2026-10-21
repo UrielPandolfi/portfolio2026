@@ -28,6 +28,7 @@ npm start
 - `src/data/projects.ts`: cada objeto crea dos páginas, imagen y descripción. Se incluyen tres **demostraciones**, sin atribuir trabajos reales ni inventar enlaces. Las imágenes ilustrativas son recortes del fondo proporcionado, no capturas de proyectos.
 - `src/data/profile.ts`: presentación, especialidades, stack, reflexiones y contactos. Reemplazar los valores `null` de email, GitHub y LinkedIn para activar enlaces reales.
 - `src/data/sceneConfig.ts`: composición completa: cámaras de escritorio/móvil, transformaciones de objetos, velas, luz de ventana, sombras, entorno y profundidad de campo.
+- `src/data/characterConfig.ts`: seguimiento de cabeza/cuello, inclinación idle, gesto ocasional, respiración y retroceso del personaje. Ver `docs/CHARACTER.md` para parámetros e inventario del rig.
 - `src/lib/sceneMaterials.ts`: brillo, rugosidad mínima y metalicidad por recurso; elimina luces importadas, emisión y mapas de iluminación de los materiales de ejecución.
 - `src/data/assets.json`: manifiesto generado con rutas verificadas, tamaños y fuentes originales.
 

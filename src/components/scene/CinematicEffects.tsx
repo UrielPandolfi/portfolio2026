@@ -118,6 +118,22 @@ export function CinematicEffects({
     current.material.uniforms.focus.value = focus
       .sub(camera.position)
       .dot(direction);
+    // Keep the seated subject inside the existing focus range when its placement changes.
+    // The far backdrop still falls outside this range; navigation uses its original focus band.
+    const subjectDepth = vectors.current.focus
+      .set(
+        sceneConfig.philosopher.position[0],
+        sceneConfig.philosopher.position[1] + 4.35,
+        sceneConfig.philosopher.position[2],
+      )
+      .sub(camera.position)
+      .dot(direction);
+    current.material.uniforms.focusBand.value = selected
+      ? sceneConfig.effects.focusBand
+      : Math.max(
+          sceneConfig.effects.focusBand,
+          Math.abs(subjectDepth - current.material.uniforms.focus.value) + 0.15,
+        );
     const previousTarget = gl.getRenderTarget();
     gl.setRenderTarget(current.target);
     gl.clear();

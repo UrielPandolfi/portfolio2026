@@ -1,0 +1,396 @@
+{
+  "source": "Assets/ancient-man.fbx",
+  "clips": [],
+  "bones": [
+    {
+      "name": "mixamorigHips",
+      "parent": "Armature",
+      "position": [0.0058, 0.5088, 0.0019],
+      "localEuler": [1.5708, -1.5708, 0]
+    },
+    {
+      "name": "mixamorigLeftUpLeg",
+      "parent": "mixamorigHips",
+      "position": [0.0565, 0.4776, -0.0058],
+      "localEuler": [-3.0309, 0, 0]
+    },
+    {
+      "name": "mixamorigLeftLeg",
+      "parent": "mixamorigLeftUpLeg",
+      "position": [0.0799, 0.2671, -0.0058],
+      "localEuler": [0.0271, -0.1473, 0.169]
+    },
+    {
+      "name": "mixamorigLeftFoot",
+      "parent": "mixamorigLeftLeg",
+      "position": [0.1033, 0.0604, -0.0409],
+      "localEuler": [0.7952, 0.3525, -1.1218]
+    },
+    {
+      "name": "mixamorigLeftToeBase",
+      "parent": "mixamorigLeftFoot",
+      "position": [0.1267, 0.0097, 0.0175],
+      "localEuler": [0.7338, 0.3594, -0.3072]
+    },
+    {
+      "name": "mixamorigLeftToe_End",
+      "parent": "mixamorigLeftToeBase",
+      "position": [0.1424, 0.0097, 0.0568],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigRightUpLeg",
+      "parent": "mixamorigHips",
+      "position": [-0.0448, 0.4776, -0.0058],
+      "localEuler": [3.0127, 0, 0]
+    },
+    {
+      "name": "mixamorigRightLeg",
+      "parent": "mixamorigRightUpLeg",
+      "position": [-0.0721, 0.2671, -0.0058],
+      "localEuler": [0.0243, -0.1641, 0.1479]
+    },
+    {
+      "name": "mixamorigRightFoot",
+      "parent": "mixamorigRightLeg",
+      "position": [-0.0994, 0.0565, -0.037],
+      "localEuler": [0.9291, 0.7056, -1.5333]
+    },
+    {
+      "name": "mixamorigRightToeBase",
+      "parent": "mixamorigRightFoot",
+      "position": [-0.1228, 0.0097, 0.0175],
+      "localEuler": [0.9469, 0.7037, -0.7322]
+    },
+    {
+      "name": "mixamorigRightToe_End",
+      "parent": "mixamorigRightToeBase",
+      "position": [-0.1385, 0.0097, 0.0542],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigSpine",
+      "parent": "mixamorigHips",
+      "position": [0.0058, 0.5672, 0.0097],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigSpine1",
+      "parent": "mixamorigSpine",
+      "position": [0.0058, 0.6335, 0.0097],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigSpine2",
+      "parent": "mixamorigSpine1",
+      "position": [0.0058, 0.7037, 0.0097],
+      "localEuler": [-0.003, 0.055, 0.0551]
+    },
+    {
+      "name": "mixamorigLeftShoulder",
+      "parent": "mixamorigSpine2",
+      "position": [0.0409, 0.7817, 0.0097],
+      "localEuler": [-1.5118, 0.0613, 0.2807]
+    },
+    {
+      "name": "mixamorigLeftArm",
+      "parent": "mixamorigLeftShoulder",
+      "position": [0.1072, 0.7856, -0.0136],
+      "localEuler": [-0.133, 0.0392, -0.3923]
+    },
+    {
+      "name": "mixamorigLeftForeArm",
+      "parent": "mixamorigLeftArm",
+      "position": [0.2476, 0.7739, -0.0058],
+      "localEuler": [0.1406, -0.0065, -0.3591]
+    },
+    {
+      "name": "mixamorigLeftHand",
+      "parent": "mixamorigLeftForeArm",
+      "position": [0.364, 0.7811, 0.0454],
+      "localEuler": [-0.2082, -0.0382, -0.0708]
+    },
+    {
+      "name": "mixamorigLeftHandPinky1",
+      "parent": "mixamorigLeftHand",
+      "position": [0.4314, 0.763, 0.0595],
+      "localEuler": [-0.5956, -0.1405, -0.0328]
+    },
+    {
+      "name": "mixamorigLeftHandPinky2",
+      "parent": "mixamorigLeftHandPinky1",
+      "position": [0.4461, 0.7474, 0.0686],
+      "localEuler": [-0.275, 0.0069, -0.1322]
+    },
+    {
+      "name": "mixamorigLeftHandPinky3",
+      "parent": "mixamorigLeftHandPinky2",
+      "position": [0.4506, 0.7373, 0.0741],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigLeftHandPinky4",
+      "parent": "mixamorigLeftHandPinky3",
+      "position": [0.4552, 0.7271, 0.0797],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigLeftHandThumb1",
+      "parent": "mixamorigLeftHand",
+      "position": [0.3806, 0.7711, 0.0771],
+      "localEuler": [-0.0008, 0.0545, -0.719]
+    },
+    {
+      "name": "mixamorigLeftHandThumb2",
+      "parent": "mixamorigLeftHandThumb1",
+      "position": [0.3892, 0.768, 0.0998],
+      "localEuler": [-0.4745, -0.5504, 0.4109]
+    },
+    {
+      "name": "mixamorigLeftHandThumb3",
+      "parent": "mixamorigLeftHandThumb2",
+      "position": [0.3992, 0.7534, 0.1099],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigLeftHandThumb4",
+      "parent": "mixamorigLeftHandThumb3",
+      "position": [0.4068, 0.7424, 0.1175],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigLeftHandMiddle1",
+      "parent": "mixamorigLeftHand",
+      "position": [0.4274, 0.7731, 0.0842],
+      "localEuler": [-0.3776, -0.08, -0.0534]
+    },
+    {
+      "name": "mixamorigLeftHandMiddle2",
+      "parent": "mixamorigLeftHandMiddle1",
+      "position": [0.4491, 0.7585, 0.0978],
+      "localEuler": [-0.6214, -0.1653, -0.0325]
+    },
+    {
+      "name": "mixamorigLeftHandMiddle3",
+      "parent": "mixamorigLeftHandMiddle2",
+      "position": [0.4541, 0.7434, 0.1033],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigLeftHandMiddle4",
+      "parent": "mixamorigLeftHandMiddle3",
+      "position": [0.4591, 0.7282, 0.1089],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigLeftHandRing1",
+      "parent": "mixamorigLeftHand",
+      "position": [0.4314, 0.7691, 0.0716],
+      "localEuler": [-0.4615, -0.1029, -0.0435]
+    },
+    {
+      "name": "mixamorigLeftHandRing2",
+      "parent": "mixamorigLeftHandRing1",
+      "position": [0.4501, 0.7539, 0.0832],
+      "localEuler": [-0.577, -0.1534, -0.0206]
+    },
+    {
+      "name": "mixamorigLeftHandRing3",
+      "parent": "mixamorigLeftHandRing2",
+      "position": [0.4541, 0.7403, 0.0877],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigLeftHandRing4",
+      "parent": "mixamorigLeftHandRing3",
+      "position": [0.4577, 0.7282, 0.0918],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigLeftHandIndex1",
+      "parent": "mixamorigLeftHand",
+      "position": [0.4184, 0.7761, 0.0968],
+      "localEuler": [-0.2732, -0.0642, -0.0173]
+    },
+    {
+      "name": "mixamorigLeftHandIndex2",
+      "parent": "mixamorigLeftHandIndex1",
+      "position": [0.438, 0.766, 0.1079],
+      "localEuler": [-0.4268, -0.0966, -0.036]
+    },
+    {
+      "name": "mixamorigLeftHandIndex3",
+      "parent": "mixamorigLeftHandIndex2",
+      "position": [0.4476, 0.7529, 0.1149],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigLeftHandIndex4",
+      "parent": "mixamorigLeftHandIndex3",
+      "position": [0.4569, 0.7402, 0.1218],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigNeck",
+      "parent": "mixamorigSpine2",
+      "position": [0.0058, 0.8168, 0.0019],
+      "localEuler": [-0.0081, -0.1211, -0.1223]
+    },
+    {
+      "name": "mixamorigHead",
+      "parent": "mixamorigNeck",
+      "position": [0.0058, 0.8752, 0.0058],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigHeadTop_End",
+      "parent": "mixamorigHead",
+      "position": [0.0058, 1.0147, 0.0151],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigRightShoulder",
+      "parent": "mixamorigSpine2",
+      "position": [-0.0292, 0.7817, 0.0097],
+      "localEuler": [-1.4948, 0.3239, 2.6745]
+    },
+    {
+      "name": "mixamorigRightArm",
+      "parent": "mixamorigRightShoulder",
+      "position": [-0.0955, 0.7856, -0.0175],
+      "localEuler": [1.8404, -1.0905, 1.8202]
+    },
+    {
+      "name": "mixamorigRightForeArm",
+      "parent": "mixamorigRightArm",
+      "position": [-0.2398, 0.7739, -0.0097],
+      "localEuler": [3.0832, 0.9156, -2.7007]
+    },
+    {
+      "name": "mixamorigRightHand",
+      "parent": "mixamorigRightForeArm",
+      "position": [-0.3569, 0.7811, 0.0434],
+      "localEuler": [-0.2555, -0.9742, -0.0123]
+    },
+    {
+      "name": "mixamorigRightHandThumb1",
+      "parent": "mixamorigRightHand",
+      "position": [-0.3766, 0.7711, 0.0741],
+      "localEuler": [0.2009, 0.3226, 0.4595]
+    },
+    {
+      "name": "mixamorigRightHandThumb2",
+      "parent": "mixamorigRightHandThumb1",
+      "position": [-0.3897, 0.766, 0.0968],
+      "localEuler": [-0.4775, -0.91, 0.0533]
+    },
+    {
+      "name": "mixamorigRightHandThumb3",
+      "parent": "mixamorigRightHandThumb2",
+      "position": [-0.4017, 0.7504, 0.1114],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigRightHandThumb4",
+      "parent": "mixamorigRightHandThumb3",
+      "position": [-0.4108, 0.7387, 0.1224],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigRightHandRing1",
+      "parent": "mixamorigRightHand",
+      "position": [-0.443, 0.762, 0.0787],
+      "localEuler": [0.8493, -1.0502, 1.4062]
+    },
+    {
+      "name": "mixamorigRightHandRing2",
+      "parent": "mixamorigRightHandRing1",
+      "position": [-0.4516, 0.7489, 0.0847],
+      "localEuler": [0.2862, -0.0765, 0.2063]
+    },
+    {
+      "name": "mixamorigRightHandRing3",
+      "parent": "mixamorigRightHandRing2",
+      "position": [-0.4546, 0.7353, 0.0897],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigRightHandRing4",
+      "parent": "mixamorigRightHandRing3",
+      "position": [-0.4574, 0.7229, 0.0943],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigRightHandMiddle1",
+      "parent": "mixamorigRightHand",
+      "position": [-0.4375, 0.766, 0.0902],
+      "localEuler": [0.335, -1.0172, 0.7628]
+    },
+    {
+      "name": "mixamorigRightHandMiddle2",
+      "parent": "mixamorigRightHandMiddle1",
+      "position": [-0.4501, 0.7539, 0.0983],
+      "localEuler": [0.3995, -0.2708, 0.4753]
+    },
+    {
+      "name": "mixamorigRightHandMiddle3",
+      "parent": "mixamorigRightHandMiddle2",
+      "position": [-0.4541, 0.7383, 0.1038],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigRightHandMiddle4",
+      "parent": "mixamorigRightHandMiddle3",
+      "position": [-0.4581, 0.7227, 0.1094],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigRightHandIndex1",
+      "parent": "mixamorigRightHand",
+      "position": [-0.4249, 0.7711, 0.0998],
+      "localEuler": [0.0162, -0.7957, 0.3116]
+    },
+    {
+      "name": "mixamorigRightHandIndex2",
+      "parent": "mixamorigRightHandIndex1",
+      "position": [-0.44, 0.762, 0.1084],
+      "localEuler": [0.2558, -0.4112, 0.4366]
+    },
+    {
+      "name": "mixamorigRightHandIndex3",
+      "parent": "mixamorigRightHandIndex2",
+      "position": [-0.4491, 0.7484, 0.1154],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigRightHandIndex4",
+      "parent": "mixamorigRightHandIndex3",
+      "position": [-0.4579, 0.7352, 0.1223],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigRightHandPinky1",
+      "parent": "mixamorigRightHand",
+      "position": [-0.4355, 0.76, 0.064],
+      "localEuler": [0.8585, -1.1524, 1.382]
+    },
+    {
+      "name": "mixamorigRightHandPinky2",
+      "parent": "mixamorigRightHandPinky1",
+      "position": [-0.4466, 0.7464, 0.0701],
+      "localEuler": [0.2266, 0.0274, 0.089]
+    },
+    {
+      "name": "mixamorigRightHandPinky3",
+      "parent": "mixamorigRightHandPinky2",
+      "position": [-0.4521, 0.7343, 0.0756],
+      "localEuler": [0, 0, 0]
+    },
+    {
+      "name": "mixamorigRightHandPinky4",
+      "parent": "mixamorigRightHandPinky3",
+      "position": [-0.4577, 0.7221, 0.0812],
+      "localEuler": [0, 0, 0]
+    }
+  ]
+}

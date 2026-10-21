@@ -1,3 +1,5 @@
+import { CHARACTER_Z_OFFSET } from "./characterConfig";
+
 export type Section = "projects" | "about" | "contact" | "philosophy";
 export type SceneState = "idle" | "focusing" | Section | "returning";
 export type Vec3 = [number, number, number];
@@ -30,12 +32,12 @@ export const sceneConfig = {
     scale: 5.9,
   },
   chair: {
-    position: [0, 0.35, -1.25] as Vec3,
+    position: [0, 0.35, -1.25 + CHARACTER_Z_OFFSET] as Vec3,
     rotation: [0, 0, 0] as Vec3,
     scale: 3.7,
   },
   philosopher: {
-    position: [0, -0.13, -0.82] as Vec3,
+    position: [0, -0.13, -0.82 + CHARACTER_Z_OFFSET] as Vec3,
     scale: 5,
     // Set a URL after exporting a replacement from Blender. Expected Y-up, seated, front +Z.
     replacementGlb: null as string | null,

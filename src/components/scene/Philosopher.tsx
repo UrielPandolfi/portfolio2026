@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useRef } from "react";
-import { useFrame, useLoader } from "@react-three/fiber";
+import { useLoader } from "@react-three/fiber";
 import { useGLTF, useTexture } from "@react-three/drei";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
@@ -9,16 +9,15 @@ import {
   LoadingManager,
   Mesh,
   MeshStandardMaterial,
-  Quaternion,
   SRGBColorSpace,
   Texture,
   TextureLoader,
-  Vector3,
 } from "three";
 import { sceneConfig, type Section } from "@/data/sceneConfig";
 import assets from "@/data/assets.json";
-import { applySeatedPose, findBone } from "@/lib/pose";
+import { applySeatedPose } from "@/lib/pose";
 import { materialProfiles, prepareImportedModel } from "@/lib/sceneMaterials";
+import { useCharacterGaze } from "@/hooks/useCharacterGaze";
 
 class DeferredTextureLoader extends TextureLoader {
   override load() {
@@ -60,33 +59,7 @@ function ExistingPhilosopher({
     applySeatedPose(object);
     return object;
   }, [source, maps]);
-  const head = useMemo(() => findBone(character, "Head"), [character]);
-  const rest = useMemo(
-    () => head?.quaternion.clone() ?? new Quaternion(),
-    [head],
-  );
-  const yaw = useMemo(() => new Quaternion(), []);
-  const yAxis = useMemo(() => new Vector3(0, 1, 0), []);
-  useFrame(({ clock, pointer }) => {
-    if (!group.current) return;
-    if (calm) {
-      group.current.position.y = 0;
-      if (head) head.quaternion.copy(rest);
-      return;
-    }
-    const time = clock.elapsedTime;
-    group.current.position.y = Math.sin(time * 0.8) * 0.004;
-    if (head) {
-      const attention =
-        selected === "projects"
-          ? -0.08
-          : selected === "about" || selected === "philosophy"
-            ? 0.08
-            : pointer.x * 0.035;
-      yaw.setFromAxisAngle(yAxis, attention + Math.sin(time * 0.2) * 0.008);
-      head.quaternion.copy(rest).multiply(yaw);
-    }
-  });
+  useCharacterGaze(character, group, calm, selected === null);
   return (
     <group
       position={sceneConfig.philosopher.position}
@@ -98,19 +71,31 @@ function ExistingPhilosopher({
     </group>
   );
 }
-function ReplacementPhilosopher({ url }: { url: string }) {
+function ReplacementPhilosopher({
+  url,
+  calm,
+  selected,
+}: {
+  url: string;
+  calm: boolean;
+  selected: Section | null;
+}) {
   const { scene } = useGLTF(url);
   const object = useMemo(() => {
     const model = clone(scene);
     prepareImportedModel(model, materialProfiles.philosopher);
     return model;
   }, [scene]);
+  const group = useRef<Group>(null);
+  useCharacterGaze(object, group, calm, selected === null);
   return (
     <group
       position={sceneConfig.philosopher.position}
       scale={sceneConfig.philosopher.scale}
     >
-      <primitive object={object} />
+      <group ref={group}>
+        <primitive object={object} dispose={null} />
+      </group>
     </group>
   );
 }
@@ -119,7 +104,10 @@ export function Philosopher(props: {
   selected: Section | null;
 }) {
   return sceneConfig.philosopher.replacementGlb ? (
-    <ReplacementPhilosopher url={sceneConfig.philosopher.replacementGlb} />
+    <ReplacementPhilosopher
+      url={sceneConfig.philosopher.replacementGlb}
+      {...props}
+    />
   ) : (
     <ExistingPhilosopher {...props} />
   );
