@@ -1,7 +1,6 @@
 "use client";
 import { Suspense, useEffect } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
-import { useProgress } from "@react-three/drei";
 import { ACESFilmicToneMapping, PCFSoftShadowMap } from "three";
 import {
   sceneConfig,
@@ -33,18 +32,6 @@ function FramePolicy({ visible, calm }: { visible: boolean; calm: boolean }) {
 function Ready({ onReady }: { onReady: () => void }) {
   useEffect(onReady, [onReady]);
   return null;
-}
-export function LoadingStatus() {
-  const { active, progress } = useProgress();
-  return active ? (
-    <div className="loading-note" role="status">
-      <p>Opening the study…</p>
-      <div className="loading-rule">
-        <span style={{ width: `${progress}%` }} />
-      </div>
-      <span>GATHERING THE DETAILS · {Math.round(progress)}%</span>
-    </div>
-  ) : null;
 }
 export default function Experience({
   state,

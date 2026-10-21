@@ -1,17 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePageVisible, useReducedMotion } from "@/hooks/usePreferences";
+import { usePageVisible } from "@/hooks/usePreferences";
 import { getRain } from "@/lib/rainAudio";
 import { Icon } from "./Icon";
 
-export function RainToggle({ suspended }: { suspended: boolean }) {
-  const reduced = useReducedMotion();
+export function RainToggle({
+  suspended,
+  enabled,
+  onToggle,
+  gestureUnlock,
+}: {
+  suspended: boolean;
+  enabled: boolean;
+  onToggle: (on: boolean) => void;
+  gestureUnlock: boolean;
+}) {
   const visible = usePageVisible();
-  const [override, setOverride] = useState<boolean | null>(null);
   const [playing, setPlaying] = useState(false);
-  const chosen = override ?? !reduced;
-  const audible = chosen && !suspended && visible;
+  const audible = enabled && !suspended && visible;
 
   useEffect(() => {
     return getRain().subscribe(setPlaying);
@@ -20,6 +27,7 @@ export function RainToggle({ suspended }: { suspended: boolean }) {
     getRain().setDesired(audible);
   }, [audible]);
   useEffect(() => {
+    if (!gestureUnlock) return;
     const unlock = () => getRain().unlock();
     window.addEventListener("pointerdown", unlock);
     window.addEventListener("keydown", unlock);
@@ -27,27 +35,27 @@ export function RainToggle({ suspended }: { suspended: boolean }) {
       window.removeEventListener("pointerdown", unlock);
       window.removeEventListener("keydown", unlock);
     };
-  }, []);
+  }, [gestureUnlock]);
 
   return (
     <button
-      className={`atmosphere-button ${chosen ? "is-dreamy" : ""}`}
-      aria-pressed={chosen}
-      aria-label={chosen ? "Mute the rain" : "Play the rain"}
+      className={`atmosphere-button ${enabled ? "is-dreamy" : ""}`}
+      aria-pressed={enabled}
+      aria-label={enabled ? "Mute the rain" : "Play the rain"}
       data-playing={playing ? "true" : "false"}
       onPointerDown={(event) => event.stopPropagation()}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") event.stopPropagation();
       }}
       onClick={() => {
-        const next = !chosen;
-        setOverride(next);
+        const next = !enabled;
+        onToggle(next);
         getRain().setDesired(next && !suspended && visible);
         getRain().unlock();
       }}
     >
-      <Icon name={chosen ? "volume" : "mute"} size={17} />
-      <span>{chosen ? "Rain" : "Quiet"}</span>
+      <Icon name={enabled ? "volume" : "mute"} size={17} />
+      <span>{enabled ? "Rain" : "Quiet"}</span>
     </button>
   );
 }

@@ -21,8 +21,8 @@ import {
 import { objectConfig } from "@/data/sceneConfig";
 
 const Experience = dynamic(() => import("./scene/Experience"), { ssr: false });
-const LoadingStatus = dynamic(
-  () => import("./scene/Experience").then((module) => module.LoadingStatus),
+const StudyGate = dynamic(
+  () => import("./ui/StudyGate").then((module) => module.StudyGate),
   { ssr: false },
 );
 const ProjectsBook = dynamic(
@@ -64,6 +64,8 @@ export default function Portfolio() {
   const [calm, setCalm] = useState(false);
   const [dreamy, setDreamy] = useState(true);
   const [ready, setReady] = useState(false);
+  const [sound, setSound] = useState(false);
+  const [entered, setEntered] = useState(false);
   const markReady = useCallback(() => setReady(true), []);
   const navigation = useSceneNavigation(reduced || calm);
   return (
@@ -91,15 +93,27 @@ export default function Portfolio() {
       </div>
       <div className="room-vignette" aria-hidden="true" />
       <div className="grain" aria-hidden="true" />
-      {!ready && navigation.state === "idle" && <LoadingStatus />}
+      {!entered && navigation.state === "idle" && (
+        <StudyGate
+          ready={ready}
+          onListen={() => {
+            setSound(true);
+            setEntered(true);
+          }}
+          onQuiet={() => setEntered(true)}
+        />
+      )}
       <HeroOverlay
         onOpen={navigation.open}
-        active={navigation.state === "idle"}
+        active={entered && navigation.state === "idle"}
         calm={calm || reduced}
         still={calm}
         onToggleCalm={() => setCalm((value) => !value)}
         dreamy={dreamy}
         onToggleDreamy={() => setDreamy((value) => !value)}
+        sound={sound}
+        onToggleSound={setSound}
+        gestureUnlock={entered}
       />
       {navigation.isPanelOpen && navigation.selected && (
         <ModalFrame

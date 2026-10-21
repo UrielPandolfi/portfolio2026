@@ -407,6 +407,53 @@ button svg {
   font-size: 11px;
   color: #b7a077;
 }
+.sound-gate {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at 50% 46%, #10140fd4 0%, #070b0af0 68%);
+  color: #c9b796;
+  text-align: center;
+}
+.sound-gate-card {
+  width: min(440px, calc(100% - 48px));
+}
+.sound-gate-card svg {
+  color: #d4b474;
+}
+.sound-gate h2 {
+  margin: 18px 0 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 34px;
+  letter-spacing: -0.4px;
+  color: #f3e6cf;
+}
+.sound-gate p {
+  max-width: 340px;
+  margin: 12px auto 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.45;
+  color: #cbb99a;
+}
+.sound-gate-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 26px;
+}
+.sound-gate-progress {
+  display: block;
+  margin-top: 14px;
+  font-size: 10px;
+  letter-spacing: 2px;
+}
 .loading-note {
   position: absolute;
   left: 50%;
@@ -1459,6 +1506,12 @@ button svg {
   }
   .project-plate {
     margin: 20px 0;
+  }
+  .sound-gate h2 {
+    font-size: 28px;
+  }
+  .sound-gate p {
+    font-size: 16px;
   }
   .loading-note {
     top: 58%;

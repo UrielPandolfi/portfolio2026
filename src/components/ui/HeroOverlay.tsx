@@ -20,6 +20,9 @@ export function HeroOverlay({
   onToggleCalm,
   dreamy,
   onToggleDreamy,
+  sound,
+  onToggleSound,
+  gestureUnlock,
 }: {
   onOpen: (section: Section) => void;
   active: boolean;
@@ -28,6 +31,9 @@ export function HeroOverlay({
   onToggleCalm: () => void;
   dreamy: boolean;
   onToggleDreamy: () => void;
+  sound: boolean;
+  onToggleSound: (on: boolean) => void;
+  gestureUnlock: boolean;
 }) {
   return (
     <div className={`hero-ui ${active ? "" : "is-away"}`} inert={!active}>
@@ -45,7 +51,12 @@ export function HeroOverlay({
           CURIOUS.
         </div>
         <div className="header-controls">
-          <RainToggle suspended={still} />
+          <RainToggle
+            suspended={still}
+            enabled={sound}
+            onToggle={onToggleSound}
+            gestureUnlock={gestureUnlock}
+          />
           <button
             className={`atmosphere-button ${dreamy ? "is-dreamy" : ""}`}
             aria-label={
