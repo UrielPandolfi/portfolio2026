@@ -135,4 +135,15 @@ await fs.writeFile(
   path.join(root, "src", "data", "assets.json"),
   `${JSON.stringify(manifest, null, 2)}\n`,
 );
+const audioDir = path.join(input, "audio");
+const audioOut = path.join(output, "audio");
+await fs.mkdir(audioOut, { recursive: true });
+const audioFiles = (await fs.readdir(audioDir)).filter((name) =>
+  /\.(mp3|wav|ogg)$/i.test(name),
+);
+if (audioFiles.length === 0) throw new Error(`No audio files in ${audioDir}`);
+for (const name of audioFiles) {
+  await fs.copyFile(path.join(audioDir, name), path.join(audioOut, name));
+}
+console.log(`Audio: ${audioFiles.length} files copied without recompression.`);
 console.log("Asset manifest written; originals preserved.");

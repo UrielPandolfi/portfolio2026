@@ -23,7 +23,7 @@ test("rain bed is the uploaded recording", async () => {
   const { audioConfig } = await dataModule("src/data/audioConfig.ts");
   assert.equal(audioConfig.rain.file, "gentle-rain-on-window.mp3");
   assert.ok(audioConfig.rain.volume > 0 && audioConfig.rain.volume < 1);
-  const file = path.resolve("public/assets/audio", audioConfig.rain.file);
+  const file = path.resolve("Assets/audio", audioConfig.rain.file);
   const stat = await fs.stat(file);
   assert.ok(stat.size > 100_000, `rain file is only ${stat.size} bytes`);
 });
