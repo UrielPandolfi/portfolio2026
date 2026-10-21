@@ -1,0 +1,7 @@
+node_modules
+.next
+out
+public/assets
+Assets
+.qa
+package-lock.json

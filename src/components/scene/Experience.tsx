@@ -1,0 +1,132 @@
+"use client";
+import { Suspense, useEffect } from "react";
+import { Canvas, useThree } from "@react-three/fiber";
+import { useProgress } from "@react-three/drei";
+import { ACESFilmicToneMapping } from "three";
+import {
+  sceneConfig,
+  sections,
+  type SceneState,
+  type Section,
+} from "@/data/sceneConfig";
+import { CameraController } from "./CameraController";
+import { Desk } from "./Desk";
+import { Philosopher } from "./Philosopher";
+import { SceneLighting } from "./SceneLighting";
+import { InteractiveObject } from "./InteractiveObject";
+import { CandleFlame } from "./CandleFlame";
+import { DustParticles } from "./DustParticles";
+import { Model } from "./Model";
+
+function FramePolicy({ visible, calm }: { visible: boolean; calm: boolean }) {
+  const { setFrameloop, invalidate } = useThree();
+  useEffect(() => {
+    setFrameloop(!visible ? "never" : calm ? "demand" : "always");
+    if (visible) invalidate();
+  }, [visible, calm, setFrameloop, invalidate]);
+  return null;
+}
+function Ready({ onReady }: { onReady: () => void }) {
+  useEffect(onReady, [onReady]);
+  return null;
+}
+export function LoadingStatus() {
+  const { active, progress } = useProgress();
+  return active ? (
+    <div className="loading-note" role="status">
+      <p>Opening the study…</p>
+      <div className="loading-rule">
+        <span style={{ width: `${progress}%` }} />
+      </div>
+      <span>GATHERING THE DETAILS · {Math.round(progress)}%</span>
+    </div>
+  ) : null;
+}
+export default function Experience({
+  state,
+  selected,
+  onOpen,
+  reducedMotion,
+  mobile,
+  visible,
+  onReady,
+}: {
+  state: SceneState;
+  selected: Section | null;
+  onOpen: (section: Section) => void;
+  reducedMotion: boolean;
+  mobile: boolean;
+  visible: boolean;
+  onReady: () => void;
+}) {
+  return (
+    <Canvas
+      dpr={mobile ? [1, 1.1] : [1, 1.35]}
+      camera={{
+        position: sceneConfig.camera.position,
+        fov: sceneConfig.camera.fov,
+        near: 0.1,
+        far: 45,
+      }}
+      gl={{
+        antialias: false,
+        alpha: true,
+        powerPreference: "high-performance",
+        toneMapping: ACESFilmicToneMapping,
+        toneMappingExposure: 1.05,
+      }}
+      fallback={
+        <span>
+          Interactive 3D study. The navigation below provides access to every
+          section.
+        </span>
+      }
+    >
+      <FramePolicy visible={visible} calm={reducedMotion} />
+      <CameraController
+        state={state}
+        selected={selected}
+        reducedMotion={reducedMotion}
+        mobile={mobile}
+      />
+      <SceneLighting />
+      <Suspense fallback={null}>
+        <Desk />
+      </Suspense>
+      <Suspense fallback={null}>
+        <Philosopher calm={reducedMotion} selected={selected} />
+      </Suspense>
+      <Suspense fallback={null}>
+        {sections.map((section) => (
+          <InteractiveObject
+            key={section}
+            section={section}
+            enabled={state === "idle"}
+            hidden={
+              selected === section &&
+              state !== "idle" &&
+              (section === "projects" || section === "contact")
+            }
+            onOpen={onOpen}
+            reducedMotion={reducedMotion}
+          />
+        ))}
+        <group position={sceneConfig.ink.position}>
+          <Model name="ink" scale={sceneConfig.ink.scale} />
+        </group>
+        {sceneConfig.candles.map((position, index) => (
+          <group key={index} position={position}>
+            <Model name="candle" scale={index ? 0.59 : 0.74} />
+            <CandleFlame
+              position={[0, index ? 0.59 : 0.74, 0]}
+              calm={reducedMotion}
+              seed={index * 5}
+            />
+          </group>
+        ))}
+        <Ready onReady={onReady} />
+      </Suspense>
+      <DustParticles calm={reducedMotion} mobile={mobile} />
+    </Canvas>
+  );
+}
