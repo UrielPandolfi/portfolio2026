@@ -4,6 +4,7 @@ import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { Group, MathUtils } from "three";
 import { objectConfig, type Section } from "@/data/sceneConfig";
+import { getStudy } from "@/lib/studyAudio";
 import { Model } from "./Model";
 
 export function InteractiveObject({
@@ -40,18 +41,18 @@ export function InteractiveObject({
       <group
         ref={group}
         onPointerOver={(event) => {
-          if (enabled) {
-            event.stopPropagation();
-            setHovered(true);
-          }
+          if (!enabled) return;
+          event.stopPropagation();
+          if (!hovered) getStudy().playHover();
+          setHovered(true);
         }}
         onPointerOut={() => setHovered(false)}
         onClick={(event) => {
-          if (enabled) {
-            event.stopPropagation();
-            setHovered(false);
-            onOpen(section);
-          }
+          if (!enabled) return;
+          event.stopPropagation();
+          setHovered(false);
+          getStudy().playObject(section);
+          onOpen(section);
         }}
       >
         <Model
@@ -70,7 +71,9 @@ export function InteractiveObject({
           className={`object-label ${hovered ? "is-hovered" : ""}`}
           tabIndex={-1}
           onClick={() => {
-            if (enabled) onOpen(section);
+            if (!enabled) return;
+            getStudy().playObject(section);
+            onOpen(section);
           }}
           aria-label={`Open ${config.label}`}
         >

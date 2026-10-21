@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { profile } from "@/data/profile";
 import { objectConfig, sections, type Section } from "@/data/sceneConfig";
+import { getStudy } from "@/lib/studyAudio";
 import { Icon } from "./Icon";
 import { RainToggle } from "./RainToggle";
 
@@ -92,7 +93,10 @@ export function HeroOverlay({
             <button
               key={section}
               data-section={section}
-              onClick={() => onOpen(section)}
+              onClick={() => {
+                getStudy().playObject(section);
+                onOpen(section);
+              }}
               aria-haspopup="dialog"
             >
               <Icon name={icons[section]} size={19} />

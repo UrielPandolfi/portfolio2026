@@ -5,6 +5,7 @@ import { Object3D, Vector2 } from "three";
 import { characterBehavior } from "@/data/characterConfig";
 import { BreathRig } from "@/lib/breath";
 import { GazeMotion, GazeRig } from "@/lib/characterGaze";
+import { getStudy } from "@/lib/studyAudio";
 
 export function useCharacterGaze(
   root: Object3D,
@@ -58,6 +59,7 @@ export function useCharacterGaze(
         : Math.sin(motion.time * characterBehavior.breathingSpeed) *
             characterBehavior.breathingAmplitude,
     );
+    getStudy().noteBreath(motion.time, calm);
     rig.apply(motion.yaw, motion.pitch);
   });
 }

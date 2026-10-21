@@ -58,6 +58,11 @@ export const sceneConfig = {
       seed: 7,
     },
   ],
+  dust: {
+    count: 132,
+    mobileCount: 44,
+    speed: 0.04,
+  },
   ink: {
     position: [0.62, 3.16, 0.48] as Vec3,
     rotation: [0, -0.6, 0] as Vec3,
@@ -105,9 +110,9 @@ export const sceneConfig = {
     dreamy: {
       flameGain: 3.35,
       bloom: {
-        intensity: 4,
+        intensity: 2,
         mobileIntensity: 0.58,
-        luminanceThreshold: 0.95,
+        luminanceThreshold: 0.2,
         luminanceSmoothing: 0.0,
         radius: 0.95,
         levels: 7,
@@ -146,9 +151,9 @@ export const objectConfig: Record<Section, ObjectConfig> = {
     label: "Projects",
     subtitle: "A collection of work",
     numeral: "I",
-    position: [-1.38, 3.17, 0.48],
+    position: [-1.2, 3.15, 0.32],
     rotation: [-Math.PI / 2, 0, -0.47],
-    scale: 1.02,
+    scale: 0.89,
     labelOffset: [0, 0.7, 0],
     focus: [-1.05, 4.02, 4.2],
   },
@@ -157,7 +162,7 @@ export const objectConfig: Record<Section, ObjectConfig> = {
     label: "Contact",
     subtitle: "Begin a conversation",
     numeral: "II",
-    position: [-0.02, 3.0, 1.05],
+    position: [-0.02, 2.99, 1.05],
     // Pitched toward the camera so the face reads, with the near edge still on the desk.
     rotation: [-Math.PI / 2 + 0.24, 0, -0.34],
     scale: 0.82,
@@ -169,7 +174,7 @@ export const objectConfig: Record<Section, ObjectConfig> = {
     label: "About me",
     subtitle: "The person behind the work",
     numeral: "III",
-    position: [1.86, 3.16, 0.64],
+    position: [1.86, 3.14, 0.64],
     rotation: [0, -0.68, 0],
     scale: 1.25,
     labelOffset: [0, 1.48, 0],

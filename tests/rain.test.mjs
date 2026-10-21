@@ -19,20 +19,11 @@ async function dataModule(filename) {
   return import(pathToFileURL(dest).href);
 }
 
-test("rain loop is audible, bounded and seamless", async () => {
-  const { renderRain } = await dataModule("src/lib/rainAudio.ts");
-  const { left, right } = renderRain(8000, 2);
-  assert.equal(left.length, right.length);
-  assert.ok(left.length > 8000);
-  let energy = 0;
-  let peak = 0;
-  for (let index = 0; index < left.length; index += 1) {
-    assert.ok(Number.isFinite(left[index]) && Number.isFinite(right[index]));
-    energy += left[index] * left[index] + right[index] * right[index];
-    peak = Math.max(peak, Math.abs(left[index]), Math.abs(right[index]));
-  }
-  const rms = Math.sqrt(energy / (left.length * 2));
-  assert.ok(rms > 0.05 && rms < 0.45, `rms ${rms}`);
-  assert.ok(peak <= 0.85, `peak ${peak}`);
-  assert.ok(Math.abs(left[0] - left[left.length - 1]) < 0.35);
+test("rain bed is the uploaded recording", async () => {
+  const { audioConfig } = await dataModule("src/data/audioConfig.ts");
+  assert.equal(audioConfig.rain.file, "gentle-rain-on-window.mp3");
+  assert.ok(audioConfig.rain.volume > 0 && audioConfig.rain.volume < 1);
+  const file = path.resolve("public/assets/audio", audioConfig.rain.file);
+  const stat = await fs.stat(file);
+  assert.ok(stat.size > 100_000, `rain file is only ${stat.size} bytes`);
 });

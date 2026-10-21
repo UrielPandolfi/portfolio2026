@@ -16,6 +16,7 @@ import { SceneLighting } from "./SceneLighting";
 import { InteractiveObject } from "./InteractiveObject";
 import { CandleFlame } from "./CandleFlame";
 import { DustParticles } from "./DustParticles";
+import { AudioRig } from "./AudioRig";
 import { Model } from "./Model";
 import { HybridEnvironment } from "./HybridEnvironment";
 import { CinematicEffects } from "./CinematicEffects";
@@ -89,6 +90,7 @@ export default function Experience({
       }
     >
       <FramePolicy visible={visible} calm={reducedMotion} />
+      <AudioRig />
       <CameraController
         state={state}
         selected={selected}
