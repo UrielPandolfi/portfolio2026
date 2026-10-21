@@ -122,7 +122,7 @@ export const objectConfig: Record<Section, ObjectConfig> = {
     label: "Contact",
     subtitle: "Begin a conversation",
     numeral: "II",
-    position: [-0.02, 3.17, 1.05],
+    position: [-0.02, 3.0, 1.05],
     rotation: [-Math.PI / 2, 0, 0.3],
     scale: 0.82,
     labelOffset: [0, 0.16, 0.4],

@@ -116,11 +116,6 @@ export default function Experience({
             key={section}
             section={section}
             enabled={state === "idle"}
-            hidden={
-              selected === section &&
-              state !== "idle" &&
-              (section === "projects" || section === "contact")
-            }
             onOpen={onOpen}
             reducedMotion={reducedMotion}
           />

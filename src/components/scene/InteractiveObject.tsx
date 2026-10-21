@@ -9,13 +9,11 @@ import { Model } from "./Model";
 export function InteractiveObject({
   section,
   enabled,
-  hidden,
   onOpen,
   reducedMotion,
 }: {
   section: Section;
   enabled: boolean;
-  hidden: boolean;
   onOpen: (section: Section) => void;
   reducedMotion: boolean;
 }) {
@@ -38,7 +36,7 @@ export function InteractiveObject({
     );
   });
   return (
-    <group position={config.position} visible={!hidden}>
+    <group position={config.position}>
       <group
         ref={group}
         onPointerOver={(event) => {
