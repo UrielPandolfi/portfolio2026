@@ -1,3 +1,5 @@
+import bookFile from "./project-book.json";
+
 export type Project = {
   id: string;
   title: string;
@@ -10,9 +12,15 @@ export type Project = {
   demo: boolean;
 };
 
-// Illustrative content only. Replace these entries with your real projects.
-// Each entry produces an image page + a story page, without animation changes.
-export const projects: Project[] = [
+export type ProjectBook = {
+  source: "demo" | "document" | "pdf";
+  file: string | null;
+  pages: string[];
+  projects: Project[];
+};
+
+// Used only when content/projects.md, .docx, and .pdf are all absent.
+const demoProjects: Project[] = [
   {
     id: "digital-craft",
     title: "Digital craft",
@@ -50,3 +58,14 @@ export const projects: Project[] = [
     demo: true,
   },
 ];
+
+const book = bookFile as ProjectBook;
+export const projectBook: ProjectBook =
+  book.source === "demo" || book.source === "document" || book.source === "pdf"
+    ? book
+    : { source: "demo", file: null, pages: [], projects: [] };
+
+export const projects: Project[] =
+  projectBook.source === "document" && projectBook.projects.length > 0
+    ? projectBook.projects
+    : demoProjects;

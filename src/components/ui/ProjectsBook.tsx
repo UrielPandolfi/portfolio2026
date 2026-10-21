@@ -2,7 +2,7 @@
 
 import { forwardRef, useEffect, useRef, useState } from "react";
 import HTMLFlipBook from "react-pageflip";
-import { projects, type Project } from "@/data/projects";
+import { projectBook, projects, type Project } from "@/data/projects";
 import { useMobile } from "@/hooks/usePreferences";
 import { Icon } from "./Icon";
 
@@ -18,17 +18,25 @@ const PicturePage = forwardRef<
       <div className="project-plate">
         <img
           src={project.image}
-          alt={`Atmospheric illustration for ${project.title}; demonstration project`}
+          alt={
+            project.demo
+              ? `Atmospheric illustration for ${project.title}; demonstration project`
+              : project.title
+          }
         />
         <div className="plate-caption">
-          <span>EXPERIMENT No. 0{Math.ceil(number / 2)}</span>
+          <span>
+            {project.demo
+              ? `EXPERIMENT No. ${String(Math.ceil(number / 2)).padStart(2, "0")}`
+              : project.year || "PLATE"}
+          </span>
           <strong>{project.category}</strong>
         </div>
         <div className="plate-corner tl" />
         <div className="plate-corner br" />
       </div>
       <div className="page-bottom">
-        <span>ILLUSTRATIVE DEMO</span>
+        <span>{project.demo ? "ILLUSTRATIVE DEMO" : project.category}</span>
         <span>{number}</span>
       </div>
     </div>
@@ -50,11 +58,13 @@ const StoryPage = forwardRef<
         <h2>{project.title}</h2>
         <span className="story-ornament">✧</span>
         <p>{project.description}</p>
-        <ul className="project-technologies">
-          {project.technologies.map((tech) => (
-            <li key={tech}>{tech}</li>
-          ))}
-        </ul>
+        {project.technologies.length > 0 && (
+          <ul className="project-technologies">
+            {project.technologies.map((tech) => (
+              <li key={tech}>{tech}</li>
+            ))}
+          </ul>
+        )}
         {project.url ? (
           <a
             className="project-link"
@@ -65,10 +75,12 @@ const StoryPage = forwardRef<
             Explore Project <Icon name="arrow" size={18} />
           </a>
         ) : (
-          <div className="demo-project-note">
-            <span>DEMONSTRATION PROJECT</span>
-            <small>A real project link will appear here.</small>
-          </div>
+          project.demo && (
+            <div className="demo-project-note">
+              <span>DEMONSTRATION PROJECT</span>
+              <small>A real project link will appear here.</small>
+            </div>
+          )
         )}
       </div>
       <div className="page-bottom">
@@ -80,10 +92,24 @@ const StoryPage = forwardRef<
 ));
 StoryPage.displayName = "StoryPage";
 
+const SheetPage = forwardRef<
+  HTMLDivElement,
+  { src: string; number: number; total: number }
+>(({ src, number, total }, ref) => (
+  <div className="book-page sheet-page" ref={ref}>
+    <div className="page-inner">
+      <img src={src} alt={`Collected works, page ${number} of ${total}`} />
+    </div>
+  </div>
+));
+SheetPage.displayName = "SheetPage";
+
 export function ProjectsBook({ reducedMotion }: { reducedMotion: boolean }) {
   const mobile = useMobile();
   const book = useRef<React.ComponentRef<typeof HTMLFlipBook>>(null);
   const [page, setPage] = useState(0);
+  const sheets = projectBook.source === "pdf" ? projectBook.pages : null;
+  const pageCount = sheets ? sheets.length : projects.length * 2;
   const go = (direction: "next" | "prev") => {
     const api = book.current?.pageFlip();
     if (!api) return;
@@ -123,7 +149,7 @@ export function ProjectsBook({ reducedMotion }: { reducedMotion: boolean }) {
           </div>
         )}
         <HTMLFlipBook
-          key={mobile ? "portrait" : "spread"}
+          key={`${mobile ? "portrait" : "spread"}-${pageCount}`}
           ref={book}
           width={440}
           height={mobile ? 650 : 560}
@@ -150,18 +176,27 @@ export function ProjectsBook({ reducedMotion }: { reducedMotion: boolean }) {
           style={{}}
           onFlip={(event) => setPage(event.data)}
         >
-          {projects.flatMap((project, index) => [
-            <PicturePage
-              key={`${project.id}-image`}
-              project={project}
-              number={index * 2 + 1}
-            />,
-            <StoryPage
-              key={`${project.id}-story`}
-              project={project}
-              number={index * 2 + 2}
-            />,
-          ])}
+          {sheets
+            ? sheets.map((src, index) => (
+                <SheetPage
+                  key={src}
+                  src={src}
+                  number={index + 1}
+                  total={sheets.length}
+                />
+              ))
+            : projects.flatMap((project, index) => [
+                <PicturePage
+                  key={`${project.id}-image`}
+                  project={project}
+                  number={index * 2 + 1}
+                />,
+                <StoryPage
+                  key={`${project.id}-story`}
+                  project={project}
+                  number={index * 2 + 2}
+                />,
+              ])}
         </HTMLFlipBook>
       </div>
       <div className="book-controls">
@@ -176,8 +211,9 @@ export function ProjectsBook({ reducedMotion }: { reducedMotion: boolean }) {
         </button>
         <div aria-live="polite">
           <span>
-            CHAPTER {String(Math.floor(page / 2) + 1).padStart(2, "0")} <i>/</i>{" "}
-            {String(projects.length).padStart(2, "0")}
+            {sheets ? "PAGE" : "CHAPTER"}{" "}
+            {String((sheets ? page : Math.floor(page / 2)) + 1).padStart(2, "0")}{" "}
+            <i>/</i> {String(sheets ? sheets.length : projects.length).padStart(2, "0")}
           </span>
           <small>
             {mobile
@@ -187,7 +223,7 @@ export function ProjectsBook({ reducedMotion }: { reducedMotion: boolean }) {
         </div>
         <button
           onClick={() => go("next")}
-          disabled={page >= projects.length * 2 - (mobile ? 1 : 2)}
+          disabled={page >= pageCount - (mobile ? 1 : 2)}
           aria-label="Next page"
         >
           <Icon name="arrow" size={19} />

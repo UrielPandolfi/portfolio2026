@@ -916,6 +916,15 @@ button svg {
 .book-page.--right {
   box-shadow: inset 18px 0 35px -20px #583717a6;
 }
+.sheet-page .page-inner {
+  padding: 0;
+}
+.sheet-page img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #f2e3c1;
+}
 .page-inner {
   height: 100%;
   display: flex;
