@@ -1,24 +1,29 @@
 import { profile } from "@/data/profile";
 import { Icon } from "./Icon";
+
 export function PhilosophyPanel() {
   return (
     <article className="philosophy-panel paper">
-      <span className="paper-eyebrow">IV — NOTES ON MAKING</span>
+      <span className="paper-eyebrow">IV — NOTES ON LIVING</span>
+
       <div className="philosophy-symbol">
         <Icon name="hourglass" size={37} />
       </div>
+
       <h2>
-        Time is the material.
+        Live with intention.
         <br />
-        <em>Intention is the craft.</em>
+        <em>Stay open to life.</em>
       </h2>
+
       <p className="philosophy-intro">
-        A few principles I return to, in code and beyond.
+      For me, philosophy is an antidote I drink a little of each day. Slowly, it soothes the unease of being human: the fear of loss, the need for certainty, and the urge to control what lies beyond us.
       </p>
+
       <div className="principles">
         {profile.philosophy.map((item, index) => (
           <section key={item.title}>
-            <span>0{index + 1}</span>
+            <span>{String(index + 1).padStart(2, "0")}</span>
             <div>
               <h3>{item.title}</h3>
               <p>{item.text}</p>
@@ -26,6 +31,7 @@ export function PhilosophyPanel() {
           </section>
         ))}
       </div>
+
       <div className="paper-bottom-ornament">✧</div>
       <small className="original-note">
         Personal reflections · Uriel Pandolfi

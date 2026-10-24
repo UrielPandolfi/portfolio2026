@@ -23,6 +23,14 @@ export function AboutPanel() {
           <br />A builder’s hands.
         </h2>
         <p className="lead">{profile.introduction}</p>
+        <div className="about-stack">
+          <h3 className="stack-heading">Tools of the craft</h3>
+          <ul className="stack-list">
+            {profile.stack.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
         <p>{profile.biography}</p>
         <div className="specialties">
           {profile.specialties.map((item) => (
@@ -32,12 +40,6 @@ export function AboutPanel() {
             </div>
           ))}
         </div>
-        <h3 className="stack-heading">Tools of the craft</h3>
-        <ul className="stack-list">
-          {profile.stack.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
         <p className="about-closing">{profile.approach}</p>
       </div>
     </article>

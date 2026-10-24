@@ -645,11 +645,29 @@ button svg {
 .contact-placeholder {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 12px;
   border-bottom: 1px solid #92713e40;
   padding: 12px 0;
   font-family: var(--serif);
   font-size: 20px;
+}
+.contact-links > a > span {
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 1.4px;
+  color: #8d7852;
+  flex: 0 0 72px;
+}
+.contact-links > a > em {
+  flex: 1;
+  min-width: 0;
+  font-style: italic;
+  font-size: 18px;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+.contact-links > a > svg {
+  flex: 0 0 auto;
 }
 .contact-links a:hover {
   color: #9b5a2c;
@@ -684,10 +702,14 @@ button svg {
   color: #8d7855;
 }
 .about-panel {
-  width: min(930px, 100%);
+  width: min(980px, 100%);
   display: grid;
-  grid-template-columns: 30% 1fr;
+  grid-template-columns: 28% 1fr;
   min-height: 580px;
+}
+.about-panel .paper-eyebrow {
+  font-size: 10px;
+  letter-spacing: 1.8px;
 }
 .about-aside {
   padding: 45px 28px;
@@ -746,30 +768,46 @@ button svg {
   margin: 17px 0;
 }
 .about-content p {
-  font-size: 17px;
+  font-size: 18px;
+  line-height: 1.55;
   margin: 10px 0;
 }
 .about-content .lead {
-  font-size: 21px;
-  color: #493925;
+  font-size: 22px;
+  line-height: 1.45;
+  color: #3f3124;
+}
+.about-stack {
+  margin: 22px 0 18px;
+  padding: 16px 18px 18px;
+  background: #6d543014;
+  border-top: 1px solid #92713e55;
+  border-bottom: 1px solid #92713e55;
 }
 .specialties {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin: 24px 0;
+  gap: 18px;
+  margin: 22px 0 8px;
   border-top: 1px solid #92713e40;
-  padding-top: 22px;
+  padding-top: 20px;
 }
 .specialties h3 {
-  font-size: 19px;
+  font-size: 21px;
+  line-height: 1.15;
 }
 .specialties p {
-  font-size: 15px;
-  line-height: 1.4;
+  font-size: 16.5px;
+  line-height: 1.45;
+  color: #534332;
 }
 .stack-heading {
-  font-size: 18px !important;
+  font-family: var(--sans) !important;
+  font-size: 11px !important;
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: #826b43;
+  margin: 0 0 12px;
 }
 .stack-list,
 .project-technologies {
@@ -780,17 +818,24 @@ button svg {
   gap: 7px;
   margin: 12px 0;
 }
+.stack-list {
+  gap: 8px;
+  margin: 0;
+}
 .stack-list li {
-  border: 1px solid #8c6d3e40;
-  padding: 5px 8px;
-  font-size: 9px;
-  color: #6e593d;
+  border: 1px solid #8c6d3e73;
+  background: #f6e8cbd4;
+  padding: 8px 12px;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+  color: #3c2e1e;
 }
 .about-content .about-closing {
   font-style: italic;
-  font-size: 16px;
-  margin: 22px 0 0;
-  color: #7c6849;
+  font-size: 18px;
+  line-height: 1.5;
+  margin: 18px 0 0;
+  color: #5e4b34;
 }
 .philosophy-panel {
   width: min(660px, 100%);
