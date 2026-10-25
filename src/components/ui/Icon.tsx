@@ -13,7 +13,8 @@ export function Icon({
     | "volume"
     | "mute"
     | "headphones"
-    | "sun";
+    | "sun"
+    | "hand";
   size?: number;
 }) {
   const paths = {
@@ -77,6 +78,14 @@ export function Icon({
       <>
         <circle cx="12" cy="12" r="4" />
         <path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1 1m12 12 1 1M5 19l1-1M18 6l1-1" />
+      </>
+    ),
+    hand: (
+      <>
+        <path d="M4.5 6.5h3.2M5.6 4.8 4.5 6.5l1.1 1.7M19.5 6.5h-3.2M18.4 4.8 19.5 6.5l-1.1 1.7" />
+        <path d="M9.2 16.2V11a1.35 1.35 0 0 1 2.7 0" />
+        <path d="M11.9 14.4V10.2a1.25 1.25 0 0 1 2.5 0V16c0 2.5-1.6 4.5-4.2 4.5h-.7c-1.7 0-3-.8-3.8-2.3L4.2 15a1.15 1.15 0 0 1 2-1.1l2.2 2.6" />
+        <path d="M8 21.5h8" />
       </>
     ),
   };

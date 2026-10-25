@@ -4,6 +4,7 @@ import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { Group, MathUtils } from "three";
 import { objectConfig, type Section } from "@/data/sceneConfig";
+import { takeCameraClick } from "@/lib/cameraDrag";
 import { getStudy } from "@/lib/studyAudio";
 import { Model } from "./Model";
 
@@ -48,7 +49,7 @@ export function InteractiveObject({
         }}
         onPointerOut={() => setHovered(false)}
         onClick={(event) => {
-          if (!enabled) return;
+          if (!enabled || takeCameraClick()) return;
           event.stopPropagation();
           setHovered(false);
           getStudy().playObject(section);

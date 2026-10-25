@@ -1,9 +1,38 @@
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { profile } from "@/data/profile";
 import { objectConfig, sections, type Section } from "@/data/sceneConfig";
+import { useMobile } from "@/hooks/usePreferences";
 import { getStudy } from "@/lib/studyAudio";
 import { Icon } from "./Icon";
 import { RainToggle } from "./RainToggle";
+
+function LookHint({ active }: { active: boolean }) {
+  const mobile = useMobile();
+  const dismissed = useRef(false);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    if (!active || !mobile || dismissed.current) return;
+    setVisible(true);
+    const hide = () => {
+      dismissed.current = true;
+      setVisible(false);
+    };
+    window.addEventListener("study-look", hide);
+    const timer = window.setTimeout(hide, 9000);
+    return () => {
+      window.removeEventListener("study-look", hide);
+      window.clearTimeout(timer);
+    };
+  }, [active, mobile]);
+  if (!mobile || !visible) return null;
+  return (
+    <div className="look-hint" role="status">
+      <Icon name="hand" size={46} />
+      <span>Drag to look around</span>
+    </div>
+  );
+}
 
 const icons = {
   projects: "book",
@@ -85,6 +114,7 @@ export function HeroOverlay({
           <span />✧<span />
         </div>
       </section>
+      <LookHint active={active} />
       <div className="study-note">
         <span>EST. IN CURIOSITY</span>
         <div />

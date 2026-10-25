@@ -94,7 +94,7 @@ button svg {
   z-index: 1;
 }
 .scene-layer canvas {
-  touch-action: pan-y;
+  touch-action: none;
 }
 .scene-layer.is-focused {
   filter: blur(7px) brightness(0.42);
@@ -252,6 +252,46 @@ button svg {
 }
 .title-ornament span:last-child {
   transform: rotate(180deg);
+}
+.look-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 148px;
+  z-index: 5;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 18px 14px;
+  color: #f0e4cc;
+  background: #0c100ccc;
+  border: 1px solid #c2a66b55;
+  box-shadow: 0 18px 50px #0008;
+  pointer-events: none;
+  text-align: center;
+}
+.look-hint span {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 1.7px;
+  text-transform: uppercase;
+  color: #e6d3b0;
+}
+.look-hint svg {
+  animation: lookNudge 1.6s ease-in-out infinite;
+}
+@keyframes lookNudge {
+  0%,
+  100% {
+    transform: translateX(-7px);
+  }
+  50% {
+    transform: translateX(7px);
+  }
+}
+.is-still .look-hint svg {
+  animation: none;
 }
 .study-note {
   position: absolute;

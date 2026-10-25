@@ -23,6 +23,8 @@ export const sceneConfig = {
     mobile: {
       position: [0.15, 4.7, 9.5] as Vec3,
       target: [0, 3.95, -0.35] as Vec3,
+      // Sideways reach so a finger can bring the book and the bust into view.
+      pan: 2.35,
     },
     parallax: [0.9, 0.14],
   },
