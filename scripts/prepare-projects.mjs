@@ -117,6 +117,17 @@ const fromPdf = async (file) => {
     if (typeof doc.cleanup === "function") await doc.cleanup();
   }
   if (pages.length === 0) throw new Error("The PDF has no pages.");
+  await fs.copyFile(file, path.join(outDir, "source.pdf"));
+  await fs.copyFile(
+    path.join(pdfjsRoot, "legacy", "build", "pdf.worker.min.mjs"),
+    path.join(outDir, "pdf.worker.min.mjs"),
+  );
+  await fs.cp(path.join(pdfjsRoot, "standard_fonts"), path.join(outDir, "standard_fonts"), {
+    recursive: true,
+  });
+  await fs.cp(path.join(pdfjsRoot, "cmaps"), path.join(outDir, "cmaps"), {
+    recursive: true,
+  });
   return { source: "pdf", file: "content/projects.pdf", pages, projects: [] };
 };
 

@@ -1215,6 +1215,9 @@ button svg {
   .projects-experience {
     width: min(780px, 100%);
   }
+  .projects-experience.pdf-reader {
+    width: min(940px, 100%);
+  }
   .book-heading {
     margin-bottom: 15px;
   }
@@ -1556,7 +1559,15 @@ button svg {
     font-size: 13px;
   }
   .book-controls button {
-    width: 35px;
+    width: 44px;
+    height: 44px;
+  }
+  .pdf-reader .reader-toolbar button,
+  .pdf-reader .book-controls button {
+    min-height: 44px;
+  }
+  .reader-toolbar {
+    gap: 8px;
   }
   .project-plate {
     margin: 20px 0;
@@ -1579,6 +1590,133 @@ button svg {
     width: 75%;
     font-size: 16px;
   }
+}
+.pdf-reader {
+  width: min(940px, 100%);
+  flex: 1;
+  min-height: 0;
+  margin: 0 auto;
+  align-items: stretch;
+}
+.projects-stage:has(.pdf-reader) {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 62px 22px 12px;
+}
+.pdf-reader .book-heading {
+  margin: 0 0 6px;
+}
+.pdf-reader .book-heading p {
+  display: none;
+}
+.reader-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 8px;
+}
+.reader-modes,
+.reader-zoom {
+  display: flex;
+  gap: 6px;
+}
+.reader-toolbar button {
+  border: 1px solid #c2a66b40;
+  background: #11181280;
+  color: #d8c7a6;
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 1.1px;
+  padding: 8px 12px;
+  min-height: 34px;
+}
+.reader-toolbar button[aria-pressed="true"] {
+  background: #b99b5d33;
+  color: #f4e7cc;
+}
+.reader-toolbar button:disabled {
+  opacity: 0.35;
+}
+.reader-zoom button:first-child,
+.reader-zoom button:last-child {
+  min-width: 36px;
+  font-family: var(--serif);
+  font-size: 18px;
+  letter-spacing: 0;
+  line-height: 1;
+}
+.pdf-reader .reader-scroll {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-x pan-y;
+}
+.reader-stage {
+  width: max-content;
+  min-width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.pdf-reader.is-book .reader-scroll {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pdf-sheet {
+  position: relative;
+  margin: 4px 0 24px;
+  background: #f4e7c8;
+  box-shadow:
+    0 22px 60px #000a,
+    0 0 0 7px #3a2418,
+    0 0 0 9px #a5743655;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+.pdf-sheet.is-ready {
+  opacity: 1;
+}
+.pdf-reader.is-reduced .pdf-sheet {
+  transition: none;
+}
+.pdf-sheet canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.annotationLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.annotationLayer section {
+  position: absolute;
+  pointer-events: auto;
+}
+.annotationLayer a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.pdf-error {
+  position: absolute;
+  inset: auto 16px 16px;
+  color: #6c4b24;
+  font-family: var(--serif);
+  font-style: italic;
+}
+.pdf-reader .book-controls {
+  margin-top: 8px;
+  flex: 0 0 auto;
 }
 .book-opening-cover {
   pointer-events: none;
