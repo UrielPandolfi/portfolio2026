@@ -33,14 +33,14 @@ export const audioConfig = {
   },
   hover: {
     file: "take.mp3",
-    volume: 0.35,
+    volume: 0.15,
     cooldown: 0.32,
   },
   objects: {
     projects: { file: "book-opening.mp3", volume: 0.48 },
     contact: { file: "envelope-opening.mp3", volume: 0.48 },
     about: { file: "bust.mp3", volume: 0.25 },
-    philosophy: { file: "sand.mp3", volume: 1.05 },
+    philosophy: { file: "sand.mp3", volume: 0.48 },
   } satisfies Record<Section, { file: string; volume: number }>,
   events: {
     breathing: {

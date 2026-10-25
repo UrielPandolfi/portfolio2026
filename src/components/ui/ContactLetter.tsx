@@ -55,7 +55,7 @@ export function ContactLetter() {
 
       <p>
         I build thoughtful web experiences with WordPress, React, and custom
-        integrations. Have a project in mind or a place on your team?
+        integrations. Have a project in mind?
         I’m open to freelance projects and remote opportunities.
         Let’s create something worth making.
       </p>

@@ -1,52 +1,12 @@
 {
-  "source": "document",
-  "file": "content/projects.md",
-  "pages": [],
-  "projects": [
-    {
-      "id": "digital-craft",
-      "title": "Digital craft",
-      "description": "An illustrative space for a thoughtfully built web experience. Add the story, screenshots, and link to your own project here.",
-      "image": "/assets/project-book.webp",
-      "year": "Demo",
-      "technologies": [
-        "React",
-        "TypeScript",
-        "APIs"
-      ],
-      "category": "Web development",
-      "url": null,
-      "demo": true
-    },
-    {
-      "id": "worlds-in-motion",
-      "title": "Worlds in motion",
-      "description": "A place for an interactive world, a playful mechanic, or an experiment in real-time storytelling. This entry is demonstration content.",
-      "image": "/assets/project-hourglass.webp",
-      "year": "Demo",
-      "technologies": [
-        "Unity",
-        "C#",
-        "Interaction"
-      ],
-      "category": "Interactive experiences",
-      "url": null,
-      "demo": true
-    },
-    {
-      "id": "the-curiosity-lab",
-      "title": "The curiosity lab",
-      "description": "An illustrative entry for an exploration at the intersection of software and artificial intelligence. Replace it with your own experiment.",
-      "image": "/assets/project-ink.webp",
-      "year": "Demo",
-      "technologies": [
-        "AI",
-        "APIs",
-        "Docker"
-      ],
-      "category": "Experimental work",
-      "url": null,
-      "demo": true
-    }
-  ]
+  "source": "pdf",
+  "file": "content/projects.pdf",
+  "pages": [
+    "/assets/projects/page-01.webp",
+    "/assets/projects/page-02.webp",
+    "/assets/projects/page-03.webp",
+    "/assets/projects/page-04.webp",
+    "/assets/projects/page-05.webp"
+  ],
+  "projects": []
 }
