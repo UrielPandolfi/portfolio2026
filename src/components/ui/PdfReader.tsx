@@ -196,6 +196,7 @@ export function PdfReader({
   return (
     <div
       className={`pdf-sheet ${ready ? "is-ready" : ""} ${reducedMotion ? "is-reduced" : ""}`}
+      data-pdf-page={page}
       ref={sheetRef}
     >
       <canvas ref={canvasRef} aria-label={`Collected works, page ${page + 1}`} />

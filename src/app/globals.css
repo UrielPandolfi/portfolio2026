@@ -171,17 +171,6 @@ button svg {
   color: #a6987b;
   margin-top: 3px;
 }
-.header-note {
-  font-size: 8px;
-  letter-spacing: 2px;
-  color: #c2b29199;
-  margin-left: -45px;
-}
-.tiny-star {
-  color: #c0a36b;
-  font-size: 12px;
-  margin-right: 12px;
-}
 .header-controls {
   display: flex;
   align-items: center;
@@ -1281,9 +1270,6 @@ button svg {
   }
 }
 @media (max-width: 1000px) {
-  .header-note {
-    display: none;
-  }
   .site-header {
     margin: 26px 29px;
   }
@@ -1664,7 +1650,10 @@ button svg {
   width: max-content;
   min-width: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  padding-bottom: 28px;
 }
 .pdf-reader.is-book .reader-scroll {
   display: flex;
@@ -1673,7 +1662,7 @@ button svg {
 }
 .pdf-sheet {
   position: relative;
-  margin: 4px 0 24px;
+  margin: 0;
   background: #f4e7c8;
   box-shadow:
     0 22px 60px #000a,

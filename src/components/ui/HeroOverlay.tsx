@@ -46,10 +46,6 @@ export function HeroOverlay({
             THE STOIC DESK<span className="wordmark-sub">A DIGITAL STUDY</span>
           </span>
         </Link>
-        <div className="header-note">
-          <span className="tiny-star">✦</span> THOUGHTFULLY BUILT. ENDLESSLY
-          CURIOUS.
-        </div>
         <div className="header-controls">
           <RainToggle
             suspended={still}

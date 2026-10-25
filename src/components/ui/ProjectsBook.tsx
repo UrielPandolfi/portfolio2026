@@ -121,7 +121,10 @@ export function ProjectsBook({ reducedMotion }: { reducedMotion: boolean }) {
   const shown = Math.min(page, Math.max(0, pageCount - 1));
   const navIndex = spread ? spreadStart(shown) : shown;
   const cssWidth = fitWidth * zoom;
+  const continuous = reading && !spread;
   const goRef = useRef<(direction: "next" | "prev") => void>(() => {});
+  const continuousRef = useRef(false);
+  continuousRef.current = continuous;
 
   const turnBook = (direction: "next" | "prev") => {
     const api = book.current?.pageFlip();
@@ -132,7 +135,19 @@ export function ProjectsBook({ reducedMotion }: { reducedMotion: boolean }) {
     } else if (direction === "next") api.flipNext();
     else api.flipPrev();
   };
+  const revealPage = (index: number) => {
+    setPage(index);
+    const scroller = scrollRef.current;
+    const sheet = scroller?.querySelector(`[data-pdf-page="${index}"]`);
+    if (!scroller || !(sheet instanceof HTMLElement)) return;
+    const top =
+      sheet.getBoundingClientRect().top -
+      scroller.getBoundingClientRect().top +
+      scroller.scrollTop;
+    scroller.scrollTo({ top, behavior: reducedMotion ? "auto" : "smooth" });
+  };
   const go = (direction: "next" | "prev") => {
+    if (continuous) return;
     if (!sheets || spread) {
       turnBook(direction);
       return;
@@ -155,8 +170,24 @@ export function ProjectsBook({ reducedMotion }: { reducedMotion: boolean }) {
   }, [mobile, spread, reading]);
 
   useEffect(() => {
-    scrollRef.current?.scrollTo(0, 0);
-  }, [shown, spread]);
+    if (spread) scrollRef.current?.scrollTo(0, 0);
+  }, [spread]);
+
+  useEffect(() => {
+    const scroller = scrollRef.current;
+    if (!scroller || !continuous) return;
+    const mark = () => {
+      const edge = scroller.getBoundingClientRect().top + 48;
+      let current = 0;
+      for (const sheet of scroller.querySelectorAll<HTMLElement>("[data-pdf-page]")) {
+        const index = Number(sheet.dataset.pdfPage);
+        if (sheet.getBoundingClientRect().top <= edge) current = index;
+      }
+      setPage((previous) => (previous === current ? previous : current));
+    };
+    scroller.addEventListener("scroll", mark, { passive: true });
+    return () => scroller.removeEventListener("scroll", mark);
+  }, [continuous, cssWidth]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -168,6 +199,7 @@ export function ProjectsBook({ reducedMotion }: { reducedMotion: boolean }) {
       ) {
         return;
       }
+      if (continuousRef.current) return;
       event.preventDefault();
       goRef.current(event.key === "ArrowRight" ? "next" : "prev");
     };
@@ -261,12 +293,15 @@ export function ProjectsBook({ reducedMotion }: { reducedMotion: boolean }) {
         {reading && !spread ? (
           cssWidth > 0 && (
             <div className="reader-stage">
-              <PdfReader
-                page={shown}
-                cssWidth={cssWidth}
-                reducedMotion={reducedMotion}
-                onGoto={setPage}
-              />
+              {sheets?.map((src, index) => (
+                <PdfReader
+                  key={src}
+                  page={index}
+                  cssWidth={cssWidth}
+                  reducedMotion={reducedMotion}
+                  onGoto={revealPage}
+                />
+              ))}
             </div>
           )
         ) : (
@@ -314,6 +349,7 @@ export function ProjectsBook({ reducedMotion }: { reducedMotion: boolean }) {
           </div>
         )}
       </div>
+      {!continuous && (
       <div className="book-controls">
         <button
           type="button"
@@ -352,6 +388,7 @@ export function ProjectsBook({ reducedMotion }: { reducedMotion: boolean }) {
           <Icon name="arrow" size={19} />
         </button>
       </div>
+      )}
     </section>
   );
 }
