@@ -6,6 +6,7 @@ import { Group, MathUtils } from "three";
 import { objectConfig, type Section } from "@/data/sceneConfig";
 import { takeCameraClick } from "@/lib/cameraDrag";
 import { getStudy } from "@/lib/studyAudio";
+import { ClickOutline } from "./ClickOutline";
 import { Model } from "./Model";
 
 export function InteractiveObject({
@@ -39,29 +40,35 @@ export function InteractiveObject({
   });
   return (
     <group position={config.position}>
-      <group
-        ref={group}
-        onPointerOver={(event) => {
-          if (!enabled) return;
-          event.stopPropagation();
-          if (!hovered) getStudy().playHover();
-          setHovered(true);
-        }}
-        onPointerOut={() => setHovered(false)}
-        onClick={(event) => {
-          if (!enabled || takeCameraClick()) return;
-          event.stopPropagation();
-          setHovered(false);
-          getStudy().playObject(section);
-          onOpen(section);
-        }}
+      <ClickOutline
+        active={enabled}
+        hovered={hovered && enabled}
+        reducedMotion={reducedMotion}
       >
-        <Model
-          name={config.asset}
-          scale={config.scale}
-          rotation={config.rotation}
-        />
-      </group>
+        <group
+          ref={group}
+          onPointerOver={(event) => {
+            if (!enabled) return;
+            event.stopPropagation();
+            if (!hovered) getStudy().playHover();
+            setHovered(true);
+          }}
+          onPointerOut={() => setHovered(false)}
+          onClick={(event) => {
+            if (!enabled || takeCameraClick()) return;
+            event.stopPropagation();
+            setHovered(false);
+            getStudy().playObject(section);
+            onOpen(section);
+          }}
+        >
+          <Model
+            name={config.asset}
+            scale={config.scale}
+            rotation={config.rotation}
+          />
+        </group>
+      </ClickOutline>
       <Html
         position={config.labelOffset}
         center
