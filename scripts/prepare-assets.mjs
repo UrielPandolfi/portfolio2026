@@ -3,8 +3,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { NodeIO } from "@gltf-transform/core";
 import { ALL_EXTENSIONS } from "@gltf-transform/extensions";
-import { dedup, meshopt } from "@gltf-transform/functions";
-import { MeshoptEncoder } from "meshoptimizer";
+import { dedup, meshopt, simplify } from "@gltf-transform/functions";
+import { MeshoptEncoder, MeshoptSimplifier } from "meshoptimizer";
 
 const root = process.cwd();
 const input = path.join(root, "Assets");
@@ -33,7 +33,37 @@ const stems = {
   hourglass: "antique hourglass",
   ink: "antique ink bottle",
 };
-await MeshoptEncoder.ready;
+// Target fraction of triangles to keep, and the maximum geometric error as a
+// fraction of each mesh. The simplifier stops when either limit is reached, so
+// dense props can fall further than the desk, the book, or the bust.
+const simplifyProfiles = {
+  desk: { ratio: 0.25, error: 0.0008 },
+  chair: { ratio: 0.2, error: 0.0008 },
+  book: { ratio: 0.3, error: 0.00065 },
+  envelope: { ratio: 0.25, error: 0.0006 },
+  bust: { ratio: 0.25, error: 0.0005 },
+  candle: { ratio: 0.12, error: 0.0008 },
+  hourglass: { ratio: 0.25, error: 0.0006 },
+  ink: { ratio: 0.15, error: 0.0005 },
+};
+const geometryStampPath = path.join(output, "geometry-stamp.json");
+const geometryStamp = JSON.stringify(simplifyProfiles);
+const previousStamp = await fs.readFile(geometryStampPath, "utf8").catch(() => "");
+const geometryChanged = previousStamp !== geometryStamp;
+await Promise.all([MeshoptEncoder.ready, MeshoptSimplifier.ready]);
+const triangleCount = (doc) =>
+  doc
+    .getRoot()
+    .listMeshes()
+    .reduce(
+      (sum, mesh) =>
+        sum +
+        mesh.listPrimitives().reduce((inner, primitive) => {
+          const indices = primitive.getIndices();
+          return inner + (indices ? indices.getCount() / 3 : 0);
+        }, 0),
+      0,
+    );
 const io = new NodeIO()
   .registerExtensions(ALL_EXTENSIONS)
   .registerDependencies({ "meshopt.encoder": MeshoptEncoder });
@@ -43,8 +73,19 @@ for (const [key, stem] of Object.entries(stems)) {
   const target = path.join(output, `${key}.glb`);
   const sourceStat = await fs.stat(path.join(input, source));
   const targetStat = await fs.stat(target).catch(() => null);
-  if (!targetStat || targetStat.mtimeMs < sourceStat.mtimeMs) {
+  if (!targetStat || targetStat.mtimeMs < sourceStat.mtimeMs || geometryChanged) {
     const doc = await io.read(path.join(input, source));
+    const beforeTriangles = triangleCount(doc);
+    const profile = simplifyProfiles[key];
+    await doc.transform(
+      simplify({
+        simplifier: MeshoptSimplifier,
+        ratio: profile.ratio,
+        error: profile.error,
+        lockBorder: true,
+      }),
+    );
+    const afterTriangles = triangleCount(doc);
     for (const texture of doc.getRoot().listTextures()) {
       const image = await sharp(texture.getImage())
         .toColourspace("srgb")
@@ -63,6 +104,9 @@ for (const [key, stem] of Object.entries(stems)) {
       meshopt({ encoder: MeshoptEncoder, level: "medium" }),
     );
     await io.write(target, doc);
+    console.log(
+      `${key}: ${beforeTriangles} → ${afterTriangles} triangles (${Math.round((1 - afterTriangles / beforeTriangles) * 100)}% less)`,
+    );
   }
   const bytes = (await fs.stat(target)).size;
   manifest[key] = {
@@ -76,6 +120,7 @@ for (const [key, stem] of Object.entries(stems)) {
     `${key}: ${(sourceStat.size / 1e6).toFixed(1)} MB -> ${(bytes / 1e6).toFixed(2)} MB`,
   );
 }
+await fs.writeFile(geometryStampPath, geometryStamp);
 const character = find("ancient-man", ".fbx");
 await fs.copyFile(
   path.join(input, character),

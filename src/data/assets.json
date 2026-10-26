@@ -2,56 +2,56 @@
   "desk": {
     "url": "/assets/desk.glb",
     "source": "Assets/antique+wooden+desk+3d+model.glb",
-    "bytes": 2465536,
+    "bytes": 1198968,
     "originalBytes": 9961228,
     "animations": 0
   },
   "chair": {
     "url": "/assets/chair.glb",
     "source": "Assets/antique+wooden+chair+3d+model.glb",
-    "bytes": 2715460,
+    "bytes": 1145708,
     "originalBytes": 10599848,
     "animations": 0
   },
   "book": {
     "url": "/assets/book.glb",
     "source": "Assets/antique+leather+book+3d+model.glb",
-    "bytes": 2560996,
+    "bytes": 1118676,
     "originalBytes": 9683492,
     "animations": 0
   },
   "envelope": {
     "url": "/assets/envelope.glb",
     "source": "Assets/antique+parchment+envelope+3d+model.glb",
-    "bytes": 2358256,
+    "bytes": 878880,
     "originalBytes": 9403812,
     "animations": 0
   },
   "bust": {
     "url": "/assets/bust.glb",
     "source": "Assets/classical+bust+3d+model.glb",
-    "bytes": 2603408,
+    "bytes": 982332,
     "originalBytes": 9633188,
     "animations": 0
   },
   "candle": {
     "url": "/assets/candle.glb",
     "source": "Assets/antique+candle+3d+model.glb",
-    "bytes": 2737576,
+    "bytes": 840468,
     "originalBytes": 10371132,
     "animations": 0
   },
   "hourglass": {
     "url": "/assets/hourglass.glb",
     "source": "Assets/antique+hourglass+3d+model.glb",
-    "bytes": 2827456,
+    "bytes": 1107532,
     "originalBytes": 10382968,
     "animations": 0
   },
   "ink": {
     "url": "/assets/ink.glb",
     "source": "Assets/antique+ink+bottle+3d+model.glb",
-    "bytes": 2486504,
+    "bytes": 740152,
     "originalBytes": 9539760,
     "animations": 0
   },

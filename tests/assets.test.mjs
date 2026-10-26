@@ -50,7 +50,7 @@ test("all manifest URLs and character texture dependencies exist", async () => {
   }
 });
 
-test("optimized GLBs preserve triangle counts, materials and embedded textures", async () => {
+test("optimized GLBs reduce triangles while keeping materials and embedded textures", async () => {
   for (const asset of Object.values(manifest).filter((asset) =>
     asset.url.endsWith(".glb"),
   )) {
@@ -63,7 +63,14 @@ test("optimized GLBs preserve triangle counts, materials and embedded textures",
           (sum, primitive) => sum + data.accessors[primitive.indices].count / 3,
           0,
         );
-    assert.equal(triangles(prepared), triangles(original), asset.url);
+    assert.ok(
+      triangles(prepared) < triangles(original) * 0.5,
+      `${asset.url}: expected at least a 50% triangle reduction`,
+    );
+    assert.ok(
+      triangles(prepared) > triangles(original) * 0.08,
+      `${asset.url}: geometry was reduced too far`,
+    );
     assert.equal(
       prepared.materials.length,
       original.materials.length,
